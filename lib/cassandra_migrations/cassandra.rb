@@ -77,9 +77,11 @@ private
   def self.connect_to_server
     load_config
     
+    Rails.logger.try(:info, "Connecting to Cassandra on #{config['host']}:#{config['port']}")
+    
     begin
       self.client = Cql::Client.new(:host => config['host'], :port => config['port'])
-      client.start!
+      client.connect
     rescue Cql::Io::ConnectionError => e
       raise Errors::ConnectionError, e.message      
     end
