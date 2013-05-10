@@ -9,9 +9,9 @@
 if defined?(PhusionPassenger)
   PhusionPassenger.on_event(:starting_worker_process) do |forked|
     if forked
-      CassandraMigrations::Cassandra.shutdown!
+      CassandraMigrations::Cassandra.restart!
     end
   end
+else
+  CassandraMigrations::Cassandra.start!
 end
-
-CassandraMigrations::Cassandra.start!

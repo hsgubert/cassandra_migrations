@@ -23,13 +23,19 @@ module CassandraMigrations::Cassandra
     end
   end
   
+  def self.restart!
+    self.client = nil
+    self.config = nil
+    start!
+  end
+  
   def self.shutdown!
     if client
-      client.shutdown!
+      client.close
       self.client = nil
     end
       
-    self.config = nil if config
+    self.config = nil
   end
   
   def self.create_keyspace!
