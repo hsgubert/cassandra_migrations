@@ -54,7 +54,7 @@ describe CassandraMigrations::Cassandra do
     
     it "should raise exception if not able to connect to cassandra host" do
       cql_client_mock = Cql::Client.new
-      cql_client_mock.stub(:start!).and_raise Cql::Io::ConnectionError
+      cql_client_mock.stub(:connect).and_raise Cql::Io::ConnectionError
       Cql::Client.stub(:new).and_return cql_client_mock
       
       expect do
