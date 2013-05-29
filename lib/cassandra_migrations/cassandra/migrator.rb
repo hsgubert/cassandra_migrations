@@ -3,7 +3,9 @@
 module CassandraMigrations::Cassandra
   module Migrator
     
-    def self.up_to_latest
+    METADATA_TABLE = 'cassandra_migrations_metadata'
+    
+    def self.up_to_latest!
       current_version = read_current_version
   
       new_migrations = get_all_migration_names.sort.select do |migration_name|
@@ -17,7 +19,7 @@ module CassandraMigrations::Cassandra
       new_migrations.size
     end
   
-    def self.rollback(count=1)
+    def self.rollback!(count=1)
       current_version = read_current_version
       
       executed_migrations = get_all_migration_names.sort.reverse.select do |migration_name|
@@ -39,7 +41,13 @@ module CassandraMigrations::Cassandra
     end
   
     def self.read_current_version
-      CassandraMigrations::Cassandra.select("metadata", :selection => "data_name='version'", :projection => 'data_value').first['data_value'].to_i
+      begin
+        select(METADATA_TABLE, :selection => "data_name='version'", :projection => 'data_value').first['data_value'].to_i
+      rescue Cql::QueryError # table cassandra_migrations_metadata does not exist
+        execute("CREATE TABLE #{METADATA_TABLE} (data_name varchar PRIMARY KEY, data_value varchar)") 
+        write(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
+        return 0
+      end
     end
     
 private
@@ -51,7 +59,7 @@ private
       get_class_from_migration_name(migration_name).up
       
       # update version
-      CassandraMigrations::Cassandra.write("metadata", {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
+      write(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
     end
     
     def self.down(migration_name, previous_migration_name=nil)
@@ -62,9 +70,9 @@ private
       
       # downgrade version
       if previous_migration_name
-        CassandraMigrations::Cassandra.write("metadata", {:data_name => 'version', :data_value => get_version_from_migration_name(previous_migration_name).to_s})
+        write(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(previous_migration_name).to_s})
       else
-        CassandraMigrations::Cassandra.write("metadata", {:data_name => 'version', :data_value => '0'})
+        write(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
       end
     end
     

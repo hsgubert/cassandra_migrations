@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    cassandra_migrations (0.0.1.pre0)
-      cql-rb (= 1.0.0.pre5)
+    cassandra_migrations (0.0.1.pre4)
+      cql-rb (= 1.0.0.pre6)
       rails (~> 3.2)
       rake (~> 10)
 
@@ -39,7 +39,7 @@ GEM
     arel (3.0.2)
     builder (3.0.4)
     columnize (0.3.6)
-    cql-rb (1.0.0.pre5)
+    cql-rb (1.0.0.pre6)
     debugger (1.5.0)
       columnize (>= 0.3.1)
       debugger-linecache (~> 1.2.0)
@@ -51,13 +51,12 @@ GEM
     hike (1.2.2)
     i18n (0.6.1)
     journey (1.0.4)
-    json (1.7.7)
-    mail (2.5.3)
-      i18n (>= 0.4.0)
+    json (1.8.0)
+    mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.23)
-    multi_json (1.7.3)
+    multi_json (1.7.4)
     polyglot (0.3.3)
     rack (1.4.5)
     rack-cache (1.2)

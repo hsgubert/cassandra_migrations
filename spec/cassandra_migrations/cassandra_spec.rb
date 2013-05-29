@@ -14,7 +14,7 @@ describe CassandraMigrations::Cassandra do
   end
   
   after do
-    CassandraMigrations::Cassandra.shutdown!
+    CassandraMigrations::Cassandra.shutdown! if CassandraMigrations::Cassandra.client
   end
   
   describe ".start!" do
@@ -45,13 +45,11 @@ describe CassandraMigrations::Cassandra do
     
     it "should use host and port configurations to create cassandra client" do
       cql_client_mock = Cql::Client.new
-      cql_client_mock.should_receive(:start!)
+      cql_client_mock.should_receive(:connect)
+      cql_client_mock.stub(:use)
       Cql::Client.should_receive(:new).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
       
-      begin
-        CassandraMigrations::Cassandra.start!
-      rescue
-      end
+      CassandraMigrations::Cassandra.start!
     end
     
     it "should raise exception if not able to connect to cassandra host" do
@@ -68,7 +66,9 @@ describe CassandraMigrations::Cassandra do
       CassandraMigrations::Cassandra.should_receive(:use).with('cassandra_migrations_development')
       CassandraMigrations::Cassandra.start!
     end
-    
+  end
+  
+  describe '.use' do
     it "should raise exception if configured keyspace does not exist" do
       expect do
         CassandraMigrations::Cassandra.start!

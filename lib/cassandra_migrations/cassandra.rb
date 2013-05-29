@@ -3,85 +3,60 @@
 require 'yaml'
 require 'cql'
 require 'cassandra_migrations/cassandra/query'
+require 'cassandra_migrations/cassandra/keyspace'
 require 'cassandra_migrations/cassandra/errors'
 require 'cassandra_migrations/cassandra/migrator'
 
 module CassandraMigrations::Cassandra
   extend Query
+  extend Keyspace
+  extend Migrator
   
   mattr_accessor :client
   mattr_accessor :config 
   
   def self.start!
-    connect_to_server unless client
-    
     # setup keyspace use
-    begin
-      use(config['keyspace'])
-    rescue Cql::QueryError # keyspace does not exist
-      raise Errors::UnexistingKeyspaceError, config['keyspace']
-    end
+    load_config
+    use(config['keyspace'])
   end
   
   def self.restart!
+    raise Errors::ClientNotStartedError unless client
+
+    client.close if client && client.connected?
     self.client = nil
     self.config = nil
     start!
   end
   
   def self.shutdown!
-    if client
-      client.close
-      self.client = nil
-    end
-      
+    raise Errors::ClientNotStartedError unless client
+
+    client.close if client.connected?
+    self.client = nil
     self.config = nil
   end
   
-  def self.create_keyspace!
-    connect_to_server unless client
-    
-    begin
-      execute(
-        "CREATE KEYSPACE #{config['keyspace']} \
-         WITH replication = { \ 
-           'class':'#{config['replication']['class']}', \
-           'replication_factor': #{config['replication']['replication_factor']} \
-         }"
-      )
-      use(config['keyspace'])
-      execute("CREATE TABLE metadata (data_name varchar PRIMARY KEY, data_value varchar)") 
-      write("metadata", {:data_name => 'version', :data_value => '0'})
-    rescue Exception => exception
-      drop!
-      raise exception
-    end
-  end
-  
-  def self.drop!
-    connect_to_server unless client
-    
-    begin
-      execute("DROP KEYSPACE #{config['keyspace']}")
-    rescue Cql::QueryError
-      raise Errors::UnexistingKeyspaceError, config['keyspace']
-    end
-  end
-  
   def self.use(keyspace)
-    raise Errors::ClientNotStartedError unless client
-    client.use(keyspace)
+    connect_to_server unless client
+
+    begin
+      client.use(keyspace)
+    rescue Cql::QueryError # keyspace does not exist
+      raise Errors::UnexistingKeyspaceError, keyspace
+    end
   end
 
   def self.execute(cql)
-    raise Errors::ClientNotStartedError unless client
+    connect_to_server unless client
     client.execute(cql)
   end  
   
 private
   
   def self.connect_to_server
-    load_config
+    load_config unless config
     
     Rails.logger.try(:info, "Connecting to Cassandra on #{config['host']}:#{config['port']}")
     
