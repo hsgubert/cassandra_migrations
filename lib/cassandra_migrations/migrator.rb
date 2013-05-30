@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module CassandraMigrations::Cassandra
+module CassandraMigrations
   module Migrator
     
     METADATA_TABLE = 'cassandra_migrations_metadata'
@@ -42,10 +42,10 @@ module CassandraMigrations::Cassandra
   
     def self.read_current_version
       begin
-        select(METADATA_TABLE, :selection => "data_name='version'", :projection => 'data_value').first['data_value'].to_i
+        Cassandra.select(METADATA_TABLE, :selection => "data_name='version'", :projection => 'data_value').first['data_value'].to_i
       rescue Cql::QueryError # table cassandra_migrations_metadata does not exist
-        execute("CREATE TABLE #{METADATA_TABLE} (data_name varchar PRIMARY KEY, data_value varchar)") 
-        write(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
+        Cassandra.execute("CREATE TABLE #{METADATA_TABLE} (data_name varchar PRIMARY KEY, data_value varchar)") 
+        Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
         return 0
       end
     end
@@ -59,7 +59,7 @@ private
       get_class_from_migration_name(migration_name).up
       
       # update version
-      write(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
+      Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
     end
     
     def self.down(migration_name, previous_migration_name=nil)
@@ -70,9 +70,9 @@ private
       
       # downgrade version
       if previous_migration_name
-        write(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(previous_migration_name).to_s})
+        Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(previous_migration_name).to_s})
       else
-        write(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
+        Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
       end
     end
     

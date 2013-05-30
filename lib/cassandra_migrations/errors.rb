@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module CassandraMigrations::Cassandra
+module CassandraMigrations
   module Errors
 
     class CassandraError < StandardError

@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["{spec}/**/*_spec.rb"]
   
   # s.add_dependency: Production dependencies
-  s.add_dependency "cql-rb", "1.0.0.pre6"
+  s.add_dependency "cql-rb", "1.0.0.pre7"
   s.add_dependency "rake", "~>10"
   s.add_dependency "rails", "~>3.2"
   
