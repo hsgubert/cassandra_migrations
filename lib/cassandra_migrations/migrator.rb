@@ -56,7 +56,7 @@ private
       # load migration
       require migration_name
       # run migration
-      get_class_from_migration_name(migration_name).up
+      get_class_from_migration_name(migration_name).new.up
       
       # update version
       Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
@@ -66,7 +66,7 @@ private
       # load migration
       require migration_name
       # run migration
-      get_class_from_migration_name(migration_name).down
+      get_class_from_migration_name(migration_name).new.down
       
       # downgrade version
       if previous_migration_name

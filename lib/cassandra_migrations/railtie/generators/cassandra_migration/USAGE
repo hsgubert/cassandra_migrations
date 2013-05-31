@@ -1,0 +1,23 @@
+Description:
+    Stubs out a new cassandra migration. 
+    
+    Pass the migration name, either CamelCased or under_scored. A migration
+    class is generated in db/cassandra_migrate, prefixed by a timestamp of the
+    current date and time
+
+Example:
+    rails generate migration create_tweets
+
+    This will create:
+      db/cassandra_migrate/20080514090912_create_tweets.rb
+      
+    Inside this file we'll have a migration ready for completion:
+      class CreateTweets << CassandraMigrations::Migration
+        def up
+
+        end
+        
+        def down
+        
+        end
+      end
