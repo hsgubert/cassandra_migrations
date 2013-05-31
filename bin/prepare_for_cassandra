@@ -1,0 +1,62 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'fileutils'
+require 'colorize'
+
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename($0)} [path]"
+
+  opts.on("-h", "--help", "Displays this help info") do
+    puts opts
+    exit 0
+  end
+
+  begin
+    opts.parse!(ARGV)
+  rescue OptionParser::ParseError => e
+    warn e.message
+    puts opts
+    exit 1
+  end
+end
+
+if ARGV.empty?
+  abort "Please specify the directory of a rails appilcation, e.g. `#{File.basename($0)} .'"
+elsif !File.directory?(ARGV.first)
+  abort "`#{ARGV.first}' is not a directory."
+elsif ARGV.length > 1
+  abort "Too many arguments; please specify only the directory of the rails application."
+end
+
+rails_root = ARGV.first
+
+# create cassandra.yaml
+if File.exists?(File.expand_path('config/cassandra.yml', rails_root))
+  puts "[skip] 'config/cassandra.yml' already exists".yellow
+else
+  puts "[new] creating 'config/cassandra.yml' (please update with your own configurations!)".green
+  FileUtils.cp(
+    File.expand_path('../template/cassandra.yml', File.dirname(__FILE__)),
+    File.expand_path('config/cassandra.yml', rails_root)
+  )
+end
+
+# create db/cassandra_migrations
+if File.exists?(File.expand_path('db/cassandra_migrate', rails_root))
+  puts "[skip] 'db/cassandra_migrate' already exists".yellow
+else
+  puts "[new] creating 'db/cassandra_migrate' directory".green
+  FileUtils.mkdir(File.expand_path('db/cassandra_migrate', rails_root))
+end
+
+puts '[done] prepared for cassandra!'.green
+puts ''
+puts 'Your steps from here are:'.green
+puts '  1. configure '.green + 'config/cassandra.yml'.red
+puts '  2. run '.green + 'rake cassandra:setup'.red + ' and try starting your application'.green
+puts '  3. create your first migration with '.green + 'rails g cassandra_migration'.red
+puts '  4. apply your migration with '.green + 'rake cassandra:migrate'.red
+puts '  5. run '.green + 'rake cassandra:test:prepare'.red + 'and start testing'.green
+puts '  6. have lots of fun!'.green.blink
+

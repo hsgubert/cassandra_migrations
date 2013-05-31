@@ -5,7 +5,6 @@ require 'cql'
 require 'cassandra_migrations/cassandra/queries'
 require 'cassandra_migrations/cassandra/keyspace_operations'
 
-
 module CassandraMigrations
   module Cassandra
     extend Queries

@@ -1,0 +1,23 @@
+development:
+  host: '127.0.0.1'
+  port: 9042
+  keyspace: 'my_keyspace_name'
+  replication:
+    class: 'SimpleStrategy'
+    replication_factor: 1
+
+test:
+  host: '127.0.0.1'
+  port: 9042
+  keyspace: 'my_keyspace_name_test'
+  replication:
+    class: 'SimpleStrategy'
+    replication_factor: 1
+    
+production:
+  host: '127.0.0.1'
+  port: 9042
+  keyspace: 'my_keyspace_name_production'
+  replication:
+    class: 'SimpleStrategy'
+    replication_factor: 1
