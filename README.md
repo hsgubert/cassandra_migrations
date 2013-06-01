@@ -1,13 +1,15 @@
 Cassandra Migrations
 ====================
 
-_There has not yet been a stable release of this project._
+**Cassandra schema management for a multi-environment developer.**
 
-**Warning: this README does not apply to the current release (0.0.1.pre4), since the release is outdated. Wait few more days!**
+A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.
+
+_There has not yet been a stable release of this project._
 
 # Requirements
 
-- Cassandra 1.2 or higher with the native_transport_protocol turned on
+- Cassandra 1.2 or higher with the native_transport_protocol turned on (Instructions to install cassandra locally: https://github.com/hsgubert/cassandra_migrations/wiki/Installing-standalone-Cassandra-locally)
 - Ruby 1.9
 - Rails 3.2
 
