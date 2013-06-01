@@ -10,7 +10,14 @@ module CassandraMigrations
         
         hash.each do |k,v| 
           columns << k.to_s
-          values << (v.is_a?(String) ? "'#{v.to_s}'" : v.to_s)
+          
+          if v.respond_to?(:strftime)
+            values << "'#{v.strftime('%Y-%m-%d %H:%M:%S%z')}'"
+          elsif v.is_a?(String)
+            values << "'#{v}'"          
+          else
+            values << v.to_s
+          end
         end
     
         execute("INSERT INTO #{table} (#{columns.join(', ')}) VALUES (#{values.join(', ')})")

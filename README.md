@@ -78,7 +78,7 @@ And now run:
 
 There are two ways to use the cassandra interface provided by this gem
 
-1. Acessing through query helpers. Examples:
+1. Acessing through query helpers
 
 ```ruby
 # selects all posts
@@ -112,7 +112,7 @@ CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234'
 CassandraMigrations::Cassandra.truncate!(:posts)
 ```
 
-2. Using raw CQL
+2. Using raw CQL3
 
 ```ruby
 CassandraMigrations::Cassandra.execute('SELECT * FROM posts')
