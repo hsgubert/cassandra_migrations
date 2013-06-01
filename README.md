@@ -27,7 +27,7 @@ In your rails root directory:
 
     prepare_for_cassandra .
     
-### Configuring Cassandra Access
+### Configuring cassandra access
 
 Open your newly-created `config/cassandra.yml` and configure the database name for each of the environments, just like you would do for your regular database. The other options defaults should be enough for now.
 
@@ -69,4 +69,57 @@ class CreatePosts < CassandraMigrations::Migration
   end
 end
 ```
-... to be continued
+
+And now run:
+
+    rake cassandra:migrate 
+
+### Using cassandra on you application
+
+There are two ways to use the cassandra interface provided by this gem
+
+1. Acessing through query helpers. Examples:
+
+```ruby
+# selects all posts
+CassandraMigrations::Cassandra.select(:posts)
+
+# more complex query 
+CassandraMigrations::Cassandra.select(:posts, 
+  :projection => 'title, created_at',
+  :selection => 'id > 1234',
+  :order_by => 'created_at DESC',
+  :limit => 10
+)
+
+# adding a new post
+CassandraMigrations::Cassandra.write!(:posts, {
+  :id => 9999,
+  :created_at => Time.current,
+  :title => 'My new post',
+  :text => 'lorem ipsum dolor sit amet.'
+})
+
+# deleting a post
+CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234')
+
+# deleting a post title
+CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234'
+  :projection => 'title'
+)
+
+# deleting all posts
+CassandraMigrations::Cassandra.truncate!(:posts)
+```
+
+2. Using raw CQL
+
+```ruby
+CassandraMigrations::Cassandra.execute('SELECT * FROM posts')
+```
+
+
+
+
+
+

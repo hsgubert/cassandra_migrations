@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'cassandra_migrations/migration/table_operations'
+require 'cassandra_migrations/migration/column_operations'
 
 module CassandraMigrations
   
@@ -8,6 +9,7 @@ module CassandraMigrations
   class Migration
     
     include TableOperations
+    include ColumnOperations
     
     # Makes +execute+ method directly available to migrations
     delegate :execute, :to => Cassandra

@@ -3,19 +3,22 @@
 module CassandraMigrations
   class Migration
 
-    # Is a class used to define a table in a migration of table creation.
+    # Used to define a table in a migration of table creation or to
+    # add columns to an existing table.
     #
     # An instance of this class is passed to the block of the method
     # +create_table+, available on every migration.
+    #
+    # This class is also internally used in the method +add_column+.
     
-    class CreateTableHelper
+    class TableDefinition
 
       def initialize()
         @columns_name_type_hash = {}
         @primary_keys = []
       end
       
-      def to_cql
+      def to_create_cql
         cql = []
 
         if !@columns_name_type_hash.empty?
@@ -33,6 +36,20 @@ module CassandraMigrations
         end
         
         cql.join(', ')
+      end
+      
+      def to_add_column_cql
+        cql = ""
+
+        if @columns_name_type_hash.size == 1
+          cql = "#{@columns_name_type_hash.keys.first} #{@columns_name_type_hash.values.first}"
+        elsif @columns_name_type_hash.empty?
+          raise Errors::MigrationDefinitionError('No column to add.')
+        else
+          raise Errors::MigrationDefinitionError('Only one column ca be added at once.')
+        end
+        
+        cql
       end
       
       def boolean(column_name, options={})
