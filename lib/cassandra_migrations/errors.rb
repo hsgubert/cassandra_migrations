@@ -38,5 +38,11 @@ module CassandraMigrations
       end
     end
     
+    class MigrationDefinitionError < CassandraError
+      def initialize(msg)
+        super(msg)
+      end
+    end
+    
   end
 end

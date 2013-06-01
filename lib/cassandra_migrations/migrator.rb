@@ -31,7 +31,7 @@ module CassandraMigrations
       if !executed_migrations.empty?
         count.times do |i|
           if executed_migrations[i]
-            down(executed_migrations[i], executed_migrations[i])
+            down(executed_migrations[i], executed_migrations[i+1])
             down_count += 1
           end
         end
@@ -56,7 +56,7 @@ private
       # load migration
       require migration_name
       # run migration
-      get_class_from_migration_name(migration_name).new.up
+      get_class_from_migration_name(migration_name).new.migrate(:up)
       
       # update version
       Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(migration_name).to_s})
@@ -66,8 +66,8 @@ private
       # load migration
       require migration_name
       # run migration
-      get_class_from_migration_name(migration_name).new.down
-      
+      get_class_from_migration_name(migration_name).new.migrate(:down)
+
       # downgrade version
       if previous_migration_name
         Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => get_version_from_migration_name(previous_migration_name).to_s})

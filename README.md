@@ -3,6 +3,8 @@ Cassandra Migrations
 
 _There has not yet been a stable release of this project._
 
+**Warning: this README does not apply to the current release (0.0.1.pre4), since the release is outdated. Wait few more days!**
+
 # Requirements
 
 - Cassandra 1.2 or higher with the native_transport_protocol turned on
@@ -47,6 +49,24 @@ There are a collection of rake tasks to help you manage the cassandra database (
 
 ### Create a test table
 
-    rails generate cassandra_migration create_tests
+    rails generate cassandra_migration create_posts
     
+In your migration file, make it create a table and drop it on its way back:
+
+```ruby
+class CreatePosts < CassandraMigrations::Migration
+  def up
+    create_table :posts do |p|
+      p.integer :id, :primary_key => true
+      p.timestamp :created_at
+      p.string :title
+      p.text :text
+    end
+  end
+  
+  def self.down
+    drop_table :posts
+  end
+end
+```
 ... to be continued
