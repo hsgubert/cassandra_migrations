@@ -131,6 +131,6 @@ To add cassandra database creation and migrations steps to your Capistrano recip
 
 # Acknowledgments
 
-This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job workin on this gem for us.
+This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job working on this gem for us.
 
 
