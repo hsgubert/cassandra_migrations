@@ -9,7 +9,7 @@ _There has not yet been a stable release of this project._
 
 # Requirements
 
-- Cassandra 1.2 or higher with the native_transport_protocol turned on (Instructions to install cassandra locally: https://github.com/hsgubert/cassandra_migrations/wiki/Installing-standalone-Cassandra-locally)
+- Cassandra 1.2 or higher with the native_transport_protocol turned on ([Instructions to install cassandra locally](https://github.com/hsgubert/cassandra_migrations/wiki/Installing-standalone-Cassandra-locally))
 - Ruby 1.9
 - Rails 3.2
 
