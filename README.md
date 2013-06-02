@@ -5,6 +5,8 @@ Cassandra Migrations
 
 A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.
 
+This enables you to use Cassandra in an organized way, combined with your ActiveRecord relational database.
+
 _There has not yet been a stable release of this project._
 
 # Requirements
@@ -127,8 +129,8 @@ This gem comes with built-in compatibility with Passenger and its smart spawning
 To add cassandra database creation and migrations steps to your Capistrano recipe, just add the following line to you deploy.rb:  
 `require 'cassandra_migrations/capistrano'`
 
+# Acknowledgments
 
-
-
+This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job workin on this gem for us.
 
 
