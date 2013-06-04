@@ -78,6 +78,25 @@ And now run:
 
     rake cassandra:migrate 
 
+To create a table with compound primary key just specify the primary keys on table creation, i.e.:
+
+```ruby
+class CreatePosts < CassandraMigrations::Migration
+  def up
+    create_table :posts, :primary_keys => [:id, :created_at] do |p|
+      p.integer :id
+      p.timestamp :created_at
+      p.string :title
+      p.text :text
+    end
+  end
+  
+  def self.down
+    drop_table :posts
+  end
+end
+```
+
 ### Using cassandra on you application
 
 There are two ways to use the cassandra interface provided by this gem
