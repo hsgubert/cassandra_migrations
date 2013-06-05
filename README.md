@@ -147,7 +147,7 @@ Select queries will return an enumerable object over which you can iterate. All 
 
 ```ruby
 CassandraMigrations::Cassandra.select(:posts).each |post_attributes|
-  puts post_attribute  
+  puts post_attributes  
 end
 
 # => {'id' => 9999, 'created_at' => 2013-05-20 18:43:23 -0300, 'title' => 'My new post', 'text' => 'lorem ipsum dolor sit amet.'}
