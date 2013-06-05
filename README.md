@@ -148,7 +148,7 @@ This gem comes with built-in compatibility with Passenger and its smart spawning
 To add cassandra database creation and migrations steps to your Capistrano recipe, just add the following line to you deploy.rb:  
 `require 'cassandra_migrations/capistrano'`
 
-# Acknowledgments
+# Acknowledgements
 
 This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job working on this gem for us.
 
