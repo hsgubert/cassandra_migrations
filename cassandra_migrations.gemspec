@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.0.1.pre6'
+  s.version     = '0.0.1.pre7'
   s.date        = '2013-03-29'
   s.license     = 'MIT'
   s.summary     = "Cassandra schema management for a multi-environment developer."
@@ -12,7 +12,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = ">= 1.8.0"
 
   # s.files: The files included in the gem.
-  s.files = Dir["lib/**/*"]
+  s.files = Dir['lib/**/*', 'template/**/*']
   
   # s.test_files: Files that are used for testing the gem.
   s.test_files = Dir["spec/**/*_spec.rb"]

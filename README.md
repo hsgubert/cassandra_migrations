@@ -97,7 +97,7 @@ class CreatePosts < CassandraMigrations::Migration
 end
 ```
 
-### Using cassandra on you application
+### Querying cassandra
 
 There are two ways to use the cassandra interface provided by this gem
 
@@ -139,6 +139,25 @@ CassandraMigrations::Cassandra.truncate!(:posts)
 
 ```ruby
 CassandraMigrations::Cassandra.execute('SELECT * FROM posts')
+```
+
+### Reading query results
+
+Select queries will return an enumerable object over which you can iterate. All other query types return `nil`.
+
+```ruby
+CassandraMigrations::Cassandra.select(:posts).each |post_attributes|
+  puts post_attribute  
+end
+
+# => {'id' => 9999, 'created_at' => 2013-05-20 18:43:23 -0300, 'title' => 'My new post', 'text' => 'lorem ipsum dolor sit amet.'}
+```
+
+If your want some info about the table metadata just call it on a query result:
+```ruby
+CassandraMigrations::Cassandra.select(:posts).metadata
+
+# => {'id' => :integer, 'created_at' => :timestamp, 'title' => :varchar, 'text' => :varchar}
 ```
 
 ### Deploy integration with Capistrano

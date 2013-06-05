@@ -3,6 +3,7 @@
 require 'yaml'
 require 'cql'
 require 'cassandra_migrations/cassandra/queries'
+require 'cassandra_migrations/cassandra/query_result'
 require 'cassandra_migrations/cassandra/keyspace_operations'
 
 module CassandraMigrations
@@ -13,8 +14,14 @@ module CassandraMigrations
     mattr_accessor :client
     
     def self.start!
-      # setup keyspace use
-      use(Config.keyspace)
+      begin
+        # setup keyspace use
+        use(Config.keyspace)
+      rescue Errors::MissingConfigurationError
+        # It's acceptable to not have a configuration file, that's why we rescue this exception.
+        # On the other hand, if the user try to execute a query this same exception won't be rescued
+        Rails.logger.try(:warn, "There is no config/cassandra.yml. Skipping connection to Cassandra...") 
+      end
     end
     
     def self.restart!
@@ -44,7 +51,8 @@ module CassandraMigrations
 
     def self.execute(cql)
       connect_to_server unless client
-      client.execute(cql)
+      result = client.execute(cql)
+      QueryResult.new(result) if result
     end  
     
   private
