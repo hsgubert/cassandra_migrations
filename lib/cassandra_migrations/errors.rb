@@ -1,9 +1,15 @@
 # encoding: utf-8
 
+require 'colorize'
+
 module CassandraMigrations
   module Errors
 
     class CassandraError < StandardError
+      def initialize(msg)
+        # Makes all exception messages red
+        super(msg.red)
+      end
     end
     
     class ClientNotStartedError < CassandraError
@@ -13,8 +19,8 @@ module CassandraMigrations
     end
     
     class MissingConfigurationError < CassandraError
-      def initialize
-        super("config/cassandra.yml is missing! Run 'prepare_for_cassandra .' in the rails root directory.")
+      def initialize(msg=nil)
+        super(msg || "config/cassandra.yml is missing! Run 'prepare_for_cassandra .' in the rails root directory.")
       end
     end
     
