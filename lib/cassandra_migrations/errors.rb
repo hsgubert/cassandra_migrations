@@ -8,7 +8,11 @@ module CassandraMigrations
     class CassandraError < StandardError
       def initialize(msg)
         # Makes all exception messages red
-        super(msg.red)
+        if msg.frozen?
+          super(msg.dup.red)
+        else
+          super(msg.red)
+        end
       end
     end
     
