@@ -7,8 +7,6 @@ A gem to manage Cassandra database schema for Rails. This gem offers migrations 
 
 This enables you to use Cassandra in an organized way, combined with your ActiveRecord relational database.
 
-_There has not yet been a stable release of this project._
-
 # Requirements
 
 - Cassandra 1.2 or higher with the native_transport_protocol turned on ([Instructions to install cassandra locally](https://github.com/hsgubert/cassandra_migrations/wiki/Preparing-standalone-Cassandra-in-local-machine))
