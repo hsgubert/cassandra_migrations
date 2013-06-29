@@ -4,23 +4,25 @@ module CassandraMigrations
   module Cassandra
     module Queries
   
-      def write!(table, hash)
+      def write!(table, value_hash)
         columns = []
         values = []
         
-        hash.each do |k,v| 
-          columns << k.to_s
-          
-          if v.respond_to?(:strftime)
-            values << "'#{v.strftime('%Y-%m-%d %H:%M:%S%z')}'"
-          elsif v.is_a?(String)
-            values << "'#{v}'"          
-          else
-            values << v.to_s
-          end
+        value_hash.each do |column, value| 
+          columns << column.to_s
+          values << to_cql_value(value)
         end
     
         execute("INSERT INTO #{table} (#{columns.join(', ')}) VALUES (#{values.join(', ')})")
+      end
+      
+      def update!(table, selection, value_hash)
+        set_terms = []
+        value_hash.each do |column, value| 
+          set_terms << "#{column} = #{to_cql_value(value)}"
+        end
+        
+        execute("UPDATE #{table} SET #{set_terms.join(', ')} WHERE #{selection}")
       end
       
       def select(table, options={})
@@ -49,6 +51,17 @@ module CassandraMigrations
         execute("TRUNCATE #{table}")
       end
       
+    private
+    
+      def to_cql_value(value)
+        if value.respond_to?(:strftime)
+          "'#{value.strftime('%Y-%m-%d %H:%M:%S%z')}'"
+        elsif value.is_a?(String)
+          "'#{value}'"          
+        else
+          value.to_s
+        end
+      end
     end
   end
 end
