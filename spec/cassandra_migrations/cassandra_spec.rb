@@ -76,16 +76,21 @@ describe CassandraMigrations::Cassandra do
       CassandraMigrations::Cassandra.start!
     end
   end
-#   
-#   
-#   
-  # describe "query interface" do
-    # it "should respond to query methods" do
-      # CassandraMigrations::Cassandra.should respond_to :select
-      # CassandraMigrations::Cassandra.should respond_to :write
-      # CassandraMigrations::Cassandra.should respond_to :delete
-      # CassandraMigrations::Cassandra.should respond_to :truncate 
-    # end
-  # end
+   
+  describe "query interface" do
+    it "should respond to query helper methods" do
+      CassandraMigrations::Cassandra.should respond_to :select
+      CassandraMigrations::Cassandra.should respond_to :write!
+      CassandraMigrations::Cassandra.should respond_to :update!
+      CassandraMigrations::Cassandra.should respond_to :delete!
+      CassandraMigrations::Cassandra.should respond_to :truncate!
+    end
+  end
   
+  describe "keyspace interface" do
+    it "should respond to keyspace helper methods" do
+      CassandraMigrations::Cassandra.should respond_to :create_keyspace!
+      CassandraMigrations::Cassandra.should respond_to :drop_keyspace!
+    end
+  end
 end
