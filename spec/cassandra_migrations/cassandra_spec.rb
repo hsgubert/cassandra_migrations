@@ -10,6 +10,7 @@ describe CassandraMigrations::Cassandra do
   
   after do
     CassandraMigrations::Cassandra.shutdown! if CassandraMigrations::Cassandra.client
+    CassandraMigrations::Config.config = nil
   end
   
   describe '.execute' do
@@ -61,31 +62,20 @@ describe CassandraMigrations::Cassandra do
     end
   end
   
-  # describe ".start!" do
-    # it "should use host and port configurations to create cassandra client" do
-      # cql_client_mock = Cql::Client.new
-      # cql_client_mock.should_receive(:connect)
-      # cql_client_mock.stub(:use)
-      # Cql::Client.should_receive(:new).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
-#       
-      # CassandraMigrations::Cassandra.start!
-    # end
-#     
-    # it "should raise exception if not able to connect to cassandra host" do
-      # cql_client_mock = Cql::Client.new
-      # cql_client_mock.stub(:connect).and_raise Cql::Io::ConnectionError
-      # Cql::Client.stub(:new).and_return cql_client_mock
-#       
-      # expect do
-        # CassandraMigrations::Cassandra.start!
-      # end.to raise_exception CassandraMigrations::Cassandra::Errors::ConnectionError
-    # end
-#     
-    # it "should automatically use configured keyspace" do
-      # CassandraMigrations::Cassandra.should_receive(:use).with('cassandra_migrations_development')
-      # CassandraMigrations::Cassandra.start!
-    # end
-  # end
+  describe ".start!" do
+    it "should use configured keyspace" do
+      CassandraMigrations::Cassandra.should_receive(:use).with('cassandra_migrations_development')
+      CassandraMigrations::Cassandra.start!
+    end
+    
+    it "should log missing configuration file or similar error, but swallow exception" do
+      Rails.stub(:root).and_return Pathname.new("spec/fake_fixture_path")
+      
+      Rails.logger = mock('logger')
+      Rails.logger.should_receive(:warn).with('There is no config/cassandra.yml. Skipping connection to Cassandra...')
+      CassandraMigrations::Cassandra.start!
+    end
+  end
 #   
 #   
 #   
