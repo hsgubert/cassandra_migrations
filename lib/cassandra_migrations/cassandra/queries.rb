@@ -44,7 +44,8 @@ module CassandraMigrations
       end
       
       def delete!(table, selection, options={})
-        execute("DELETE #{options[:projection]} FROM #{table} WHERE #{selection}")
+        options[:projection] = options[:projection].to_s + ' ' if options[:projection]
+        execute("DELETE #{options[:projection]}FROM #{table} WHERE #{selection}")
       end
       
       def truncate!(table)

@@ -59,4 +59,32 @@ describe CassandraMigrations::Cassandra::Queries do
       )
     end
   end  
+  
+  describe '.delete!' do
+    it 'should delete rows based in a selection' do
+      TestQueryExecutor.should_receive(:execute).with(
+        "DELETE FROM people WHERE name IN ('John', 'Mike')"
+      )
+      
+      TestQueryExecutor.delete!('people', "name IN ('John', 'Mike')")
+    end
+    
+    it 'should delete column based in a selection and projection' do
+      TestQueryExecutor.should_receive(:execute).with(
+        "DELETE age FROM people WHERE name IN ('John', 'Mike')"
+      )
+      
+      TestQueryExecutor.delete!('people', "name IN ('John', 'Mike')", :projection => :age)
+    end
+  end
+  
+  describe '.truncate!' do
+    it 'should clear table' do
+      TestQueryExecutor.should_receive(:execute).with(
+        "TRUNCATE people"
+      )
+      
+      TestQueryExecutor.truncate!('people')
+    end
+  end
 end
