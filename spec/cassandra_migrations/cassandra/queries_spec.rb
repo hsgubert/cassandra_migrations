@@ -22,4 +22,16 @@ describe CassandraMigrations::Cassandra::Queries do
     end
   end
   
+  describe '.update!' do
+    it 'should update some record values' do
+      TestQueryExecutor.should_receive(:execute).with(
+        "UPDATE people SET height_in_meters = 1.93, birth_time = '1989-05-28 08:50:25+0000' WHERE name = 'John'"
+      )
+      
+      TestQueryExecutor.update!('people', "name = 'John'", {
+        :height_in_meters => 1.93,
+        :birth_time => Time.new(1989, 05, 28, 8, 50, 25, 0)
+      })
+    end
+  end  
 end
