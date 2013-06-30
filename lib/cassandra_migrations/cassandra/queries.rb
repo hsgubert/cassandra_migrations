@@ -4,7 +4,7 @@ module CassandraMigrations
   module Cassandra
     module Queries
   
-      def write!(table, value_hash)
+      def write!(table, value_hash, options={})
         columns = []
         values = []
         
@@ -13,7 +13,13 @@ module CassandraMigrations
           values << to_cql_value(value)
         end
     
-        execute("INSERT INTO #{table} (#{columns.join(', ')}) VALUES (#{values.join(', ')})")
+        query = "INSERT INTO #{table} (#{columns.join(', ')}) VALUES (#{values.join(', ')})"
+        
+        if options[:ttl]
+          query += " USING TTL #{options[:ttl]}"
+        end
+        
+        execute(query)
       end
       
       def update!(table, selection, value_hash)
