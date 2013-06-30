@@ -105,7 +105,7 @@ There are two ways to use the cassandra interface provided by this gem
 # selects all posts
 CassandraMigrations::Cassandra.select(:posts)
 
-# more complex query 
+# more complex select query 
 CassandraMigrations::Cassandra.select(:posts, 
   :projection => 'title, created_at',
   :selection => 'id > 1234',
@@ -120,6 +120,28 @@ CassandraMigrations::Cassandra.write!(:posts, {
   :title => 'My new post',
   :text => 'lorem ipsum dolor sit amet.'
 })
+
+# adding a new post with TTL
+CassandraMigrations::Cassandra.write!(:posts, 
+  {
+    :id => 9999,
+    :created_at => Time.current,
+    :title => 'My new post',
+    :text => 'lorem ipsum dolor sit amet.'
+  },
+  :ttl => 3600
+)
+
+# updating a post
+CassandraMigrations::Cassandra.update!(:posts, 'id = 9999', 
+  :title => 'Updated title'
+)
+
+# updating a post with TTL
+CassandraMigrations::Cassandra.update!(:posts, 'id = 9999', 
+  { :title => 'Updated title' },
+  :ttl => 3600
+)
 
 # deleting a post
 CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234')
@@ -145,7 +167,7 @@ Select queries will return an enumerable object over which you can iterate. All 
 
 ```ruby
 CassandraMigrations::Cassandra.select(:posts).each |post_attributes|
-  puts post_attributes  
+  puts post_attributes
 end
 
 # => {'id' => 9999, 'created_at' => 2013-05-20 18:43:23 -0300, 'title' => 'My new post', 'text' => 'lorem ipsum dolor sit amet.'}
