@@ -22,13 +22,21 @@ module CassandraMigrations
         execute(query)
       end
       
-      def update!(table, selection, value_hash)
+      def update!(table, selection, value_hash, options={})
         set_terms = []
         value_hash.each do |column, value| 
           set_terms << "#{column} = #{to_cql_value(value)}"
         end
         
-        execute("UPDATE #{table} SET #{set_terms.join(', ')} WHERE #{selection}")
+        query = "UPDATE #{table}"
+        
+        if options[:ttl]
+          query += " USING TTL #{options[:ttl]}"
+        end
+        
+        query += " SET #{set_terms.join(', ')} WHERE #{selection}"
+        
+        execute(query)
       end
       
       def select(table, options={})

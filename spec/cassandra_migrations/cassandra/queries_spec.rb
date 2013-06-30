@@ -41,6 +41,14 @@ describe CassandraMigrations::Cassandra::Queries do
         :birth_time => Time.new(1989, 05, 28, 8, 50, 25, 0)
       )
     end
+    
+    it 'should set record TTL' do
+      TestQueryExecutor.should_receive(:execute).with(
+        "UPDATE people USING TTL 3600 SET name = 'Johnny' WHERE name = 'John'"
+      )
+      
+      TestQueryExecutor.update!('people', "name = 'John'", {:name => 'Johnny'}, :ttl => 3600)
+    end
   end
   
   describe '.select' do
