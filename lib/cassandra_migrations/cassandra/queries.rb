@@ -73,8 +73,8 @@ module CassandraMigrations
           "'#{value.strftime('%Y-%m-%d %H:%M:%S%z')}'"
         elsif value.is_a?(String)
           "'#{value}'"          
-	elsif v.is_a?(Hash)
-          "{ #{v.reduce("") {|sum, (key, value)| sum << "'#{key}': '#{value}'" } } }"
+	elsif value.is_a?(Hash)
+          "{ #{value.reduce("") {|sum, (key, value)| sum << "'#{key}': '#{value}'" } } }"
         else
           value.to_s
         end
