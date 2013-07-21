@@ -9,24 +9,21 @@ describe CassandraMigrations::Cassandra do
   end
   
   after do
-    CassandraMigrations::Cassandra.shutdown! if CassandraMigrations::Cassandra.client
+    CassandraMigrations::Cassandra.client = nil
     CassandraMigrations::Config.config = nil
   end
   
   describe '.execute' do
     it 'should connect to cassandra using host and port configured' do
-      cql_client_mock = Cql::Client.new
-      Cql::Client.should_receive(:new).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
-      cql_client_mock.should_receive(:connect)
+      cql_client_mock = mock('cql_client')
+      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
       cql_client_mock.should_receive(:execute).with('anything').and_return(nil)
     
       CassandraMigrations::Cassandra.execute('anything').should be_nil
     end
     
     it 'raise exception if there is something wrong with the connection' do
-      cql_client_mock = Cql::Client.new
-      Cql::Client.should_receive(:new).and_return(cql_client_mock)
-      cql_client_mock.should_receive(:connect).and_raise(Cql::Io::ConnectionError)
+      Cql::Client.should_receive(:connect).and_raise(Cql::Io::ConnectionError)
 
       expect {    
         CassandraMigrations::Cassandra.execute('anything')
@@ -34,7 +31,7 @@ describe CassandraMigrations::Cassandra do
     end
     
     it 'should return a QueryResult if the query returns something' do
-      CassandraMigrations::Cassandra.client = Cql::Client.new
+      CassandraMigrations::Cassandra.client = mock('cql_client')
       
       result_mock = mock('result_mock')
       CassandraMigrations::Cassandra.client.should_receive(:execute).with('anything').and_return(result_mock)
@@ -47,9 +44,8 @@ describe CassandraMigrations::Cassandra do
   
   describe '.use' do
     it 'should connect to cassandra using host and port configured' do
-      cql_client_mock = Cql::Client.new
-      Cql::Client.should_receive(:new).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
-      cql_client_mock.should_receive(:connect)
+      cql_client_mock = mock('cql_client')
+      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
       cql_client_mock.should_receive(:use).with('anything').and_return(nil)
     
       CassandraMigrations::Cassandra.use('anything').should be_nil
