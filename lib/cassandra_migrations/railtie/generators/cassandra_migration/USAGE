@@ -6,7 +6,7 @@ Description:
     current date and time
 
 Example:
-    rails generate migration create_tweets
+    rails generate cassandra_migration create_tweets
 
     This will create:
       db/cassandra_migrate/20080514090912_create_tweets.rb
