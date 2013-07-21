@@ -46,7 +46,7 @@ module CassandraMigrations
         elsif @columns_name_type_hash.empty?
           raise Errors::MigrationDefinitionError('No column to add.')
         else
-          raise Errors::MigrationDefinitionError('Only one column ca be added at once.')
+          raise Errors::MigrationDefinitionError('Only one column can be added at once.')
         end
         
         cql

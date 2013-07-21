@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cassandra_migrations (0.0.1)
+    cassandra_migrations (0.0.2)
       colorize (~> 0.5)
       cql-rb (= 1.0.0.pre7)
       rails (~> 3.2)
