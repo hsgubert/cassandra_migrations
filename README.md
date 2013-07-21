@@ -180,6 +180,10 @@ CassandraMigrations::Cassandra.select(:posts).metadata
 # => {'id' => :integer, 'created_at' => :timestamp, 'title' => :varchar, 'text' => :varchar}
 ```
 
+### Using uuid data type
+
+Please refer to the wiki: [Using uuid data type](https://github.com/hsgubert/cassandra_migrations/wiki/Using-uuid-data-type)
+
 ### Deploy integration with Capistrano
 
 This gem comes with built-in compatibility with Passenger and its smart spawning functionality, so if you're using Passenger all you have to do is deploy and be happy!
