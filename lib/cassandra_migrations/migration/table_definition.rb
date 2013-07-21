@@ -104,6 +104,11 @@ module CassandraMigrations
         define_primary_keys(column_name) if options[:primary_key]
       end
       
+      def timeuuid(column_name, options={})
+        @columns_name_type_hash[column_name.to_sym] = :timeuuid
+        define_primary_keys(column_name) if options[:primary_key]
+      end
+      
       def define_primary_keys(*keys)
         if !@primary_keys.empty?
           raise Errors::MigrationDefinitionError('Primary key defined twice for the same table.')
