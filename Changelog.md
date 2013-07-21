@@ -1,4 +1,10 @@
-### 0.0.2 / 2010-10-30
+### 0.0.3 / 2013-07-21
+
+* Enhancements
+  * Add support for uuid data type
+  * Update ruby CQL 3 driver (now cql-rb 1.0.1)
+
+### 0.0.2 / 2013-06-30
 
 * Enhancements
   * Add update! query helper
