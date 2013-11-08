@@ -13,11 +13,11 @@ This enables you to use Cassandra in an organized way, combined with your Active
 
 - Cassandra 1.2 or higher with the native_transport_protocol turned on ([Instructions to install cassandra locally](https://github.com/hsgubert/cassandra_migrations/wiki/Preparing-standalone-Cassandra-in-local-machine))
 - Ruby 1.9
-- Rails 3.2 _(not tested with Rails 4 yet, volunteers are welcome!)_
+- Rails 3.2 _(not tested with Rails 4 yet, volunteers are welcome! ...and needed!)_
 
 # Installation
 
-    gem install --prerelease cassandra_migrations
+    gem install cassandra_migrations
 
 # Quick start
 
@@ -96,6 +96,8 @@ class CreatePosts < CassandraMigrations::Migration
   end
 end
 ```
+
+There are some other helpers like `add_column` too.. take a look inside!
 
 ### Querying cassandra
 
