@@ -14,7 +14,7 @@ module CassandraMigrations
 
     def self.load_config
       begin
-        self.config = YAML.load_file(Rails.root.join("config", "cassandra.yml"))[Rails.env]
+        self.config = YAML.load(ERB.new(File.new(Rails.root.join("config", "cassandra.yml")).read).result)[Rails.env]
       
         if config.nil?
           raise Errors::MissingConfigurationError, "No configuration for #{Rails.env} environment! Complete your config/cassandra.yml."

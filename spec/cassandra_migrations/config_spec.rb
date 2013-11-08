@@ -32,5 +32,17 @@ describe CassandraMigrations::Config do
       CassandraMigrations::Config.keyspace
     }.to raise_exception CassandraMigrations::Errors::MissingConfigurationError
   end
+  
+  it 'should allow ERB in the config file' do
+    Rails.stub(:root).and_return Pathname.new("spec/fixtures/with_erb")
+    Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("test")
+    
+    CassandraMigrations::Config.keyspace.should == 'cassandra_migrations_test'
+    
+    CassandraMigrations::Config.config = nil
+    ENV.stub(:[]).with("CI").and_return("true")
+    
+    CassandraMigrations::Config.keyspace.should == 'cassandra_migrations_ci'
+  end
 end
   
