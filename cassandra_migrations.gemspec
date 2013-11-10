@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.0.3'
-  s.date        = '2013-07-21'
+  s.version     = '0.0.4'
+  s.date        = '2013-11-10'
   s.license     = 'MIT'
   s.summary     = "Cassandra schema management for a multi-environment developer."
   s.description = "A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users."
