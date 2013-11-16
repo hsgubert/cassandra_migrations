@@ -33,6 +33,14 @@ module CassandraMigrations
         execute create_cql
       end
       
+      def create_index(table_name, column_name, options = {})
+        announce_operation "create_index(#{table_name})"
+        create_index_cql = "CREATE INDEX #{options[:name]} ON #{table_name} (#{column_name})".squeeze(' ')
+        announce_suboperation create_index_cql
+        
+        execute create_index_cql
+      end
+      
       # Drops a table
       def drop_table(table_name)
         announce_operation "drop_table(#{table_name})"
@@ -41,6 +49,19 @@ module CassandraMigrations
         
         execute drop_cql
       end
+      
+      def drop_index(table_or_index_name, column_name = nil, options = {})
+        if column_name
+          index_name = "#{table_or_index_name}_#{column_name}_idx"
+        else
+          index_name = table_or_index_name
+        end
+        drop_index_cql = "DROP INDEX #{options[:if_exists] ? 'IF EXISTS' : ''}#{index_name}"
+        announce_suboperation drop_index_cql
+        
+        execute drop_index_cql        
+      end
+
     end
   end
 end

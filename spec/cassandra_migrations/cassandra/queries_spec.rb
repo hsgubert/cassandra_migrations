@@ -5,6 +5,16 @@ describe CassandraMigrations::Cassandra::Queries do
   
   class TestQueryExecutor
     extend CassandraMigrations::Cassandra::Queries
+    
+    def self.column_type=(column_type)
+      @column_type = column_type
+    end
+    
+    private 
+    
+      def self.get_column_type(table, column)
+        @column_type
+      end
   end
   
   describe '.write!' do
@@ -28,6 +38,39 @@ describe CassandraMigrations::Cassandra::Queries do
       
       TestQueryExecutor.write!('people', {:name => 'John'}, :ttl => 3600)
     end
+    
+    context 'when dealing with collections' do
+      
+      it 'should handle setting a set collection column value' do
+        TestQueryExecutor.column_type = :set
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "INSERT INTO people (friends) VALUES ({'John', 'Ringo', 'Paul', 'George'})"
+        )
+      
+        TestQueryExecutor.write!('people', {friends: ['John', 'Ringo', 'Paul', 'George']})
+      end
+      
+      it 'should handle setting a list collection column value' do
+        TestQueryExecutor.column_type = :list
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "INSERT INTO people (friends) VALUES (['John', 'Ringo', 'Paul', 'George'])"
+        )
+      
+        TestQueryExecutor.write!('people', {friends: ['John', 'Ringo', 'Paul', 'George']})
+      end
+      
+      it 'should handle setting a map collection column value' do
+        TestQueryExecutor.column_type = :map
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "INSERT INTO people (friends) VALUES ({ 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' })"
+        )
+      
+        TestQueryExecutor.write!('people', {friends: {talent: 'John', drums: 'Ringo', voice: 'Paul', rhythm: 'George'}})
+      end
+    end
   end
   
   describe '.update!' do
@@ -48,6 +91,109 @@ describe CassandraMigrations::Cassandra::Queries do
       )
       
       TestQueryExecutor.update!('people', "name = 'John'", {:name => 'Johnny'}, :ttl => 3600)
+    end
+    
+    context 'when dealing with collections' do
+      
+      it 'should handle setting a set collection column' do
+        TestQueryExecutor.column_type = :set
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", {friends: ['John', 'Ringo', 'Paul', 'George']})
+      end
+      
+      it 'should handle adding elements to a set collection column' do
+        TestQueryExecutor.column_type = :set
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = friends + {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", 
+                                            {friends: ['John', 'Ringo', 'Paul', 'George']},
+                                            {operations: {friends: :+}})
+      end
+
+      it 'should handle removing elements from a set collection column' do
+        TestQueryExecutor.column_type = :set
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = friends - {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", 
+                                            {friends: ['John', 'Ringo', 'Paul', 'George']},
+                                            {operations: {friends: :-}})
+      end
+      
+      it 'should handle setting a list collection column' do
+        TestQueryExecutor.column_type = :list
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", {friends: ['John', 'Ringo', 'Paul', 'George']})
+      end
+      
+      it 'should handle adding elements to a list collection column' do
+        TestQueryExecutor.column_type = :list
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = friends + ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", 
+                                            {friends: ['John', 'Ringo', 'Paul', 'George']},
+                                            {operations: {friends: :+}})
+      end
+
+      it 'should handle removing elements from a list collection column' do
+        TestQueryExecutor.column_type = :list
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = friends - ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", 
+                                            {friends: ['John', 'Ringo', 'Paul', 'George']},
+                                            {operations: {friends: :-}})
+      end      
+      
+      it 'should handle setting a map collection column' do
+        TestQueryExecutor.column_type = :map
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = { 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' } WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", {friends: {talent: 'John', drums: 'Ringo', voice: 'Paul', rhythm: 'George'}})
+      end
+      
+      it 'should handle adding elements to a map collection column' do
+        TestQueryExecutor.column_type = :map
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "UPDATE people SET friends = friends + { 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' } WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.update!('people', "name = 'Stuart'", 
+                                            {friends: {talent: 'John', drums: 'Ringo', voice: 'Paul', rhythm: 'George'}},
+                                            {operations: {friends: :+}})
+      end
+      
+      it 'should handle removing elements from a map collection column' do
+        TestQueryExecutor.column_type = :map
+        
+        TestQueryExecutor.should_receive(:execute).with(
+          "DELETE friends['drums'] FROM people WHERE name = 'Stuart'"
+        )
+      
+        TestQueryExecutor.delete!('people', "name = 'Stuart'", :projection => "friends['drums']")
+      end
     end
   end
   
