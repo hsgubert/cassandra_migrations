@@ -53,6 +53,10 @@ module CassandraMigrations
         if options[:limit]
           query_string << " LIMIT #{options[:limit]}"
         end
+        
+        if options[:allow_filtering]
+          query_string << " ALLOW FILTERING"
+        end
     
         execute(query_string)
       end
