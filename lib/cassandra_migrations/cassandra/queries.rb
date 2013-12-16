@@ -106,7 +106,7 @@ module CassandraMigrations
           "'#{value}'"   
         elsif value.is_a?(Array)
           type = get_column_type(table, column)
-          values = %[#{value.map {|v| "'#{v}'"} * ', '}] 
+          values = %[#{value.map { |v| to_cql_value(nil, v, nil) } * ', '}] 
           
           if type && type == :list
             %[#{operation}[#{values}]]
