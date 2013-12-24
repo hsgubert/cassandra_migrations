@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   # s.add_dependency: Production dependencies
   s.add_dependency 'cql-rb', '1.1.2'
   s.add_dependency 'rake', '~>10'
-  s.add_dependency 'rails', '~>3.2'
+  s.add_dependency 'rails', '>= 3.2'
   s.add_dependency 'colorize', '~>0.5'
   
   # s.add_development_dependency: Development dependencies
