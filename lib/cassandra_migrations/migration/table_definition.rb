@@ -67,6 +67,12 @@ module CassandraMigrations
         define_primary_keys(column_name) if options[:primary_key]
       end
       
+      def double(column_name, options={})
+        options[:limit] = 8
+        @columns_name_type_hash[column_name.to_sym] = column_type_for(:float, options) 
+        define_primary_keys(column_name) if options[:primary_key]
+      end
+      
       def string(column_name, options={})
         @columns_name_type_hash[column_name.to_sym] = column_type_for(:string, options)
         define_primary_keys(column_name) if options[:primary_key]
