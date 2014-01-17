@@ -1,4 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/cassandra_migrations.png)](http://badge.fury.io/rb/cassandra_migrations)
+[![Code Climate](https://codeclimate.com/github/hsgubert/cassandra_migrations.png)](https://codeclimate.com/github/hsgubert/cassandra_migrations)
 
 Cassandra Migrations
 ====================

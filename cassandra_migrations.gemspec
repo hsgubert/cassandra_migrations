@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = '2013-11-10'
   s.license     = 'MIT'
   s.summary     = "Cassandra schema management for a multi-environment developer."
-  s.description = "A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users."
+  s.description = "A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment sific databases out-of-the-box for Rails users."
   s.authors     = ["Henrique Gubert"]
   s.email       = 'guberthenrique@hotmail.com'
   s.homepage    = 'https://github.com/hsgubert/cassandra_migrations'
@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.files = Dir['lib/**/*', 'template/**/*']
   
   # s.test_files: Files that are used for testing the gem.
-  s.test_files = Dir["spec/**/*_spec.rb"]
+  s.test_files = Dir["s/**/*_s.rb"]
   
   # s.executables: Executables that comes with the gem
   s.executables = ['prepare_for_cassandra']
@@ -29,4 +29,9 @@ Gem::Specification.new do |s|
   # s.add_development_dependency: Development dependencies
   s.add_development_dependency "rspec"
   s.add_development_dependency "debugger"
+  
+  s.add_development_dependency 'bundler', '~> 1.3'
+  s.add_development_dependency 'rake'
+  s.add_development_dependency 'simplecov'
+  s.add_development_dependency 'coveralls'
 end
