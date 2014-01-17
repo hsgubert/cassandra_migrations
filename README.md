@@ -3,7 +3,7 @@
 Cassandra Migrations
 ====================
 
-**Cassandra schema management for a multi-environment developer.**
+**Cassandra schema management for a multi-environment development.**
 
 A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.
 
@@ -13,7 +13,7 @@ This enables you to use Cassandra in an organized way, combined with your Active
 
 - Cassandra 1.2 or higher with the native_transport_protocol turned on ([Instructions to install cassandra locally](https://github.com/hsgubert/cassandra_migrations/wiki/Preparing-standalone-Cassandra-in-local-machine))
 - Ruby 1.9
-- Rails 3.2 _(not tested with Rails 4 yet, volunteers are welcome! ...and needed!)_
+- Rails > 3.2
 
 # Installation
 
@@ -99,6 +99,25 @@ end
 
 There are some other helpers like `add_column` too.. take a look inside!
 
+### Migrations for Cassandra Collections
+
+Support for C* collections is provided via the list, set and map column types. 
+
+```ruby
+
+class CollectionsListMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists do |t|
+      t.uuid :id, :primary_key => true
+      t.list :my_list, :type => :string
+      t.set :my_set, :type => :float
+      t.map :my_map, :key_type => :uuid, :value_type => :float
+    end
+  end
+end
+
+```
+
 ### Querying cassandra
 
 There are two ways to use the cassandra interface provided by this gem
@@ -159,7 +178,54 @@ CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234'
 CassandraMigrations::Cassandra.truncate!(:posts)
 ```
 
-#### 2. Using raw CQL3
+#### 4. Manipulating Collections
+
+Given a migration that generates a set type column as shown next:
+
+```ruby
+class CreatePeople < CassandraMigrations::Migration
+  def up
+    create_table :people, :primary_keys => :id do |t|
+      t.uuid :id
+      t.string :ssn
+      ...
+      t.set :emails, :type => :string
+    end
+  end
+
+  ...
+end
+```
+
+You can add new emails to the existing collection:
+
+```ruby
+CassandraMigrations::Cassandra.update!(:people, "ssn = '867530900'",
+                                       {emails: ['jenny@goodtimes.com', 'jenn@numberonthewall.net']},
+                                       {operations: {emails: :+}})
+```
+
+You can remove emails from the collection:
+
+```ruby
+CassandraMigrations::Cassandra.update!(:people, "ssn = '867530900'",
+                                       {emails: ['jenny@goodtimes.com']},
+                                       {operations: {emails: :-}})
+```
+
+Or, completely replace the existing values in the collection:
+
+```ruby
+CassandraMigrations::Cassandra.update!(:people, "ssn = '867530900'",
+                                       {emails: ['jenny@goodtimes.com', 'jenn@numberonthewall.net']})
+```
+
+The same operations (addition `:+` and subtraction `:-`) are supported by all collection types.
+
+Read more about C* collections at http://cassandra.apache.org/doc/cql3/CQL.html#collections
+
+
+#### 3. Using raw CQL3
 
 ```ruby
 CassandraMigrations::Cassandra.execute('SELECT * FROM posts')
