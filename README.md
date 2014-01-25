@@ -140,6 +140,13 @@ CassandraMigrations::Cassandra.select(:posts,
   :limit => 10
 )
 
+# selects single row by uuid
+CassandraMigrations::Cassandra.select(:posts,
+  :projection => 'title, created_at',
+  :selection => 'id = 6bc939c2-838e-11e3-9706-4f2824f98172',
+  :allow_filtering => true  # needed for potentially expensive queries
+)
+
 # adding a new post
 CassandraMigrations::Cassandra.write!(:posts, {
   :id => 9999,

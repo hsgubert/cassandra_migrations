@@ -220,6 +220,18 @@ describe CassandraMigrations::Cassandra::Queries do
         :projection => 'age, birth_time'
       )
     end
+
+    it 'should be able to query by uuid' do
+      TestQueryExecutor.should_receive(:execute).with(
+          'SELECT id FROM people WHERE id = 6bc939c2-838e-11e3-9706-4f2824f98172 ALLOW FILTERING'
+      )
+
+      TestQueryExecutor.select('people',
+        :selection => 'id = 6bc939c2-838e-11e3-9706-4f2824f98172',
+        :projection => 'id',
+        :allow_filtering => true
+      )
+    end
   end  
   
   describe '.delete!' do
