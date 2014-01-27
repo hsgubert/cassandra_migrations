@@ -98,6 +98,29 @@ class CreatePosts < CassandraMigrations::Migration
 end
 ```
 
+To create a table with a secondary index you add it similar to regular rails indexes, i.e.:
+
+```ruby
+class CreatePosts < CassandraMigrations::Migration
+  def up
+    create_table :posts, :primary_keys => [:id, :created_at] do |p|
+      p.integer :id
+      p.timestamp :created_at
+      p.string :title
+      p.text :text
+    end
+    
+    create_index :posts, :title, :name => 'by_title'
+  end
+  
+  def self.down
+ 	drop_index 'by_title'
+  
+    drop_table :posts
+  end
+end
+```
+
 There are some other helpers like `add_column` too.. take a look inside!
 
 ### Migrations for Cassandra Collections
@@ -135,6 +158,13 @@ CassandraMigrations::Cassandra.select(:posts,
   :selection => 'id > 1234',
   :order_by => 'created_at DESC',
   :limit => 10
+)
+
+# selects single row by uuid
+CassandraMigrations::Cassandra.select(:posts,
+  :projection => 'title, created_at',
+  :selection => 'id = 6bc939c2-838e-11e3-9706-4f2824f98172',
+  :allow_filtering => true  # needed for potentially expensive queries
 )
 
 # adding a new post
