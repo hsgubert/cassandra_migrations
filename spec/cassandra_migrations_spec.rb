@@ -164,5 +164,29 @@ describe CassandraMigrations do
       end
     end
 
+    context 'that has composite primary key' do
+      before do
+        @migration = CompositePrimaryKey.new
+      end
+      
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE composite_primary_key (id uuid, a_string varchar, PRIMARY KEY(id, a_string))"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
+
+    context 'that has composite partition key' do
+      before do
+        @migration = CompositePartitionKey.new
+      end
+      
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE composite_partition_key (id uuid, a_string varchar, a_timestamp timestamp, PRIMARY KEY((id, a_string), a_timestamp))"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
+
   end
 end
