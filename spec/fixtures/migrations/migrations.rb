@@ -103,3 +103,23 @@ class MigrationWithANamedSecondaryIndex < CassandraMigrations::Migration
     drop_index 'by_another_string'
   end
 end
+
+class CompositePrimaryKey < CassandraMigrations::Migration
+  def up
+    create_table :composite_primary_key, :primary_keys => [:id, :a_string] do |t|
+      t.uuid :id
+      t.string :a_string
+    end
+  end
+end
+
+class CompositePartitionKey < CassandraMigrations::Migration
+  def up
+    create_table :composite_partition_key, :partition_keys => [:id, :a_string], :primary_keys => [:id, :a_string, :a_timestamp] do |t|
+      t.uuid :id
+      t.string :a_string
+      t.timestamp :a_timestamp
+    end
+  end
+end
+

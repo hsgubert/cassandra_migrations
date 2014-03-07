@@ -19,6 +19,7 @@ module CassandraMigrations
       def create_table(table_name, options = {})
         table_definition = TableDefinition.new
         table_definition.define_primary_keys(options[:primary_keys]) if options[:primary_keys]
+        table_definition.define_partition_keys(options[:partition_keys]) if options[:partition_keys]
 
         yield table_definition if block_given?
 

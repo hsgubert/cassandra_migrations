@@ -98,6 +98,26 @@ class CreatePosts < CassandraMigrations::Migration
 end
 ```
 
+To create a table with a compound partition key specify the partition keys on table creation, i.e.:
+
+```ruby
+class CreatePosts < CassandraMigrations::Migration
+  def up
+    create_table :posts, :partition_keys => [:id, :created_month], :primary_keys => [:created_at] do |p|
+      p.integer :id
+      p.string :creation_month
+      p.timestamp :created_at
+      p.string :title
+      p.text :text
+    end
+  end
+  
+  def self.down
+    drop_table :posts
+  end
+end
+```
+
 To create a table with a secondary index you add it similar to regular rails indexes, i.e.:
 
 ```ruby
