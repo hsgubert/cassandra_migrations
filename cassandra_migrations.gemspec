@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.0.7'
+  s.version     = '0.0.8'
   s.date        = '2014-03-07'
   s.license     = 'MIT'
   s.summary     = "Cassandra schema management for a multi-environment developer."
