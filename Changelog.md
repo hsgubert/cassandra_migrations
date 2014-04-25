@@ -1,3 +1,9 @@
+### 0.0.8 / 2014-04-25
+
+* Enhacements
+  * Add support for decimal type
+  * Update ruby CQL 3 driver (now cql-rb 2.0.0.pre1)
+
 ### 0.0.3 / 2013-07-21
 
 * Enhancements
