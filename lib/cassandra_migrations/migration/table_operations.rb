@@ -20,6 +20,7 @@ module CassandraMigrations
         table_definition = TableDefinition.new
         table_definition.define_primary_keys(options[:primary_keys]) if options[:primary_keys]
         table_definition.define_partition_keys(options[:partition_keys]) if options[:partition_keys]
+        table_definition.define_options(options[:options]) if options[:options]
 
         yield table_definition if block_given?
 
@@ -28,6 +29,7 @@ module CassandraMigrations
         create_cql =  "CREATE TABLE #{table_name} ("
         create_cql << table_definition.to_create_cql
         create_cql << ")"
+        create_cql << table_definition.options
         
         announce_suboperation create_cql
         
@@ -61,6 +63,14 @@ module CassandraMigrations
         announce_suboperation drop_index_cql
         
         execute drop_index_cql        
+      end
+
+      def add_options(table_name, options)
+        announce_operation "add_options_#{table_name}"
+        add_options_cql = "ALTER TABLE #{properties_cql(options)}"
+        announce_suboperation drop_index_cql
+
+        execute add_options_cql
       end
 
     end

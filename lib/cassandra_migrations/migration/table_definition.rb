@@ -102,6 +102,10 @@ module CassandraMigrations
         cql
       end
 
+      def options
+        @options ? " WITH %s" % (@options.map {|option| build_option(option)}.join(" AND ")) : ''
+      end
+
       def boolean(column_name, options={})
         @columns_name_type_hash[column_name.to_sym] = column_type_for(:boolean, options)
         define_primary_keys(column_name) if options[:primary_key]
@@ -226,6 +230,10 @@ module CassandraMigrations
         @partition_keys = keys.flatten
       end
 
+      def define_options(hash)
+        @options = hash
+      end
+
       private
 
       PASSTHROUGH_TYPES = [:text, :ascii, :decimal, :double, :boolean,
@@ -240,6 +248,11 @@ module CassandraMigrations
                         float: { 4 => :float, 8 => :double, nil => :float }
                       }
 
+      SPECIAL_OPTIONS_MAP = {
+                      compact_storage: 'COMPACT STORAGE',
+                      clustering_order: 'CLUSTERING ORDER'
+                    }
+
       def column_type_for(type, options={})
         cql_type = type if PASSTHROUGH_TYPES.include?(type)
         cql_type ||= TYPES_MAP[type]
@@ -251,6 +264,19 @@ module CassandraMigrations
           cql_type ||= PRECISION_MAP[type][limit]
         end
         cql_type
+      end
+
+      def build_option(option)
+        name, value = option
+        cql_name = SPECIAL_OPTIONS_MAP.fetch(name, name.to_s)
+        case name
+          when :clustering_order
+            "#{cql_name} BY (#{value})"
+          when :compact_storage
+            cql_name
+          else
+            "#{cql_name} = #{value}"
+        end
       end
 
     end

@@ -245,5 +245,41 @@ describe CassandraMigrations do
         expect(@migration.cql).to eq(expected_cql)
       end
     end
+
+    context 'with clustering order' do
+      before do
+        @migration = WithClusteringOrderMigration.new
+      end
+
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH CLUSTERING ORDER BY (a_decimal DESC)"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
+
+    context 'with compact storage' do
+      before do
+        @migration = WithCompactStorageMigration.new
+      end
+
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH COMPACT STORAGE"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
+
+    context 'with other property' do
+      before do
+        @migration = WithPropertyMigration.new
+      end
+
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH gc_grace_seconds = 43200"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
   end
 end

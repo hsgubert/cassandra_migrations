@@ -167,3 +167,32 @@ class DecimalColumnDeclarationMigration < CassandraMigrations::Migration
     end
   end
 end
+
+class WithClusteringOrderMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists, options: {clustering_order: 'a_decimal DESC'} do |t|
+      t.uuid :id, :primary_key => true
+      t.decimal :a_decimal
+    end
+  end
+end
+
+class WithCompactStorageMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists, options: {compact_storage: true} do |t|
+      t.uuid :id, :primary_key => true
+      t.decimal :a_decimal
+    end
+  end
+end
+
+class WithPropertyMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists, options: {gc_grace_seconds: 43200} do |t|
+      t.uuid :id, :primary_key => true
+      t.decimal :a_decimal
+    end
+  end
+end
+
+
