@@ -4,7 +4,7 @@ Gem::Specification.new do |s|
   s.date        = '2014-04-25'
   s.license     = 'MIT'
   s.summary     = 'Cassandra schema management for a multi-environment developer.'
-  s.description = 'A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment sific databases out-of-the-box for Rails users.'
+  s.description = 'A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.'
   s.authors     = ['Henrique Gubert', 'Brian Sam-Bodden']
   s.email       = ['guberthenrique@hotmail.com', 'bsbodden@integrallis.com']
   s.homepage    = 'https://github.com/hsgubert/cassandra_migrations'
