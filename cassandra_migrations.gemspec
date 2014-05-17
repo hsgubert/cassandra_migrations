@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.0.8'
+  s.version     = '0.0.9'
   s.date        = '2014-04-25'
   s.license     = 'MIT'
   s.summary     = 'Cassandra schema management for a multi-environment developer.'
@@ -27,9 +27,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'colorize', '~>0.5'
 
   # s.add_development_dependency: Development dependencies
-  s.add_development_dependency 'rspec'
-  s.add_development_dependency 'debugger'
+  s.add_development_dependency 'rspec', '~> 2.14'
+  s.add_development_dependency 'debugger', '~> 1.6'
   s.add_development_dependency 'bundler', '~> 1.3'
-  s.add_development_dependency 'simplecov'
-  s.add_development_dependency 'coveralls'
+  s.add_development_dependency 'simplecov', '~> 0.8'
+  s.add_development_dependency 'coveralls', '~> 0.7'
 end
