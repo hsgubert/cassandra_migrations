@@ -57,6 +57,17 @@ describe CassandraMigrations::Cassandra do
       }.to raise_exception CassandraMigrations::Errors::UnexistingKeyspaceError
     end
   end
+
+  describe '.using_keyspace' do
+    it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
+      cql_client_mock = double('cql_client')
+      original_keyspace = CassandraMigrations::Config.keyspace
+      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
+      cql_client_mock.should_receive(:use).with('anything').and_return(nil)
+      cql_client_mock.should_receive(:use).with(original_keyspace).and_return(nil)
+      expect { |block| CassandraMigrations::Cassandra.using_keyspace('anything', &block) }.to yield_control
+    end
+  end
   
   describe ".start!" do
     it "should use configured keyspace" do

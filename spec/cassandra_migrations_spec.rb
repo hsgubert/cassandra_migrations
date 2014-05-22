@@ -281,5 +281,30 @@ describe CassandraMigrations do
         expect(@migration.cql).to eq(expected_cql)
       end
     end
+
+    context 'using a different keyspace' do
+      before do
+        @migration = WithAlternateKeyspaceMigration.new
+        Rails.stub(:root).and_return Pathname.new("spec/fixtures")
+        Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+      end
+
+      it 'should produce a valid CQL create statement' do
+        CassandraMigrations::Cassandra.stub(:use)
+        @migration.up
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH COMPACT STORAGE"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+
+      it 'should set and reset the keyspace' do
+
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH COMPACT STORAGE"
+        original_keyspace = CassandraMigrations::Config.keyspace
+        CassandraMigrations::Cassandra.should_receive(:use).with('alternative')
+        @migration.should_receive(:execute).with(expected_cql)
+        CassandraMigrations::Cassandra.should_receive(:use).with(original_keyspace)
+        @migration.up
+      end
+    end
   end
 end
