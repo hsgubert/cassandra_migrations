@@ -44,5 +44,11 @@ describe CassandraMigrations::Config do
     
     CassandraMigrations::Config.keyspace.should == 'cassandra_migrations_ci'
   end
+
+  it 'allows access to configurations for other environments than the current Rails.env' do
+    Rails.stub(:root).and_return Pathname.new("spec/fixtures")
+    Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+    CassandraMigrations::Config.configurations['production'].keyspace.should == 'cassandra_migrations_production'
+  end
 end
   

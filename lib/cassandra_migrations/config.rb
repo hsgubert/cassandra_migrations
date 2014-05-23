@@ -7,7 +7,11 @@ module CassandraMigrations
 
     Configuration = Struct.new(*FIELDS.map(&:to_sym))
 
-    mattr_accessor :configurations
+    mattr_writer :configurations
+
+    def self.configurations
+      @configurations || load_config
+    end
 
     def self.method_missing(method_sym, *arguments, &block)
       load_config unless configurations
@@ -19,10 +23,11 @@ module CassandraMigrations
     def self.load_config
       begin
         configs = YAML.load(ERB.new(File.new(Rails.root.join("config", "cassandra.yml")).read).result)
-        self.configurations = Hash[configs.map { |env, config| [env, Configuration.new(*config.slice(*FIELDS).values)]}]
+        configurations = Hash[configs.map { |env, config| [env, Configuration.new(*config.slice(*FIELDS).values)]}]
         if configurations[Rails.env].nil?
           raise Errors::MissingConfigurationError, "No configuration for #{Rails.env} environment! Complete your config/cassandra.yml."
         end
+        configurations
       rescue Errno::ENOENT
         raise Errors::MissingConfigurationError
       end
