@@ -10,7 +10,7 @@ describe CassandraMigrations::Cassandra do
   
   after do
     CassandraMigrations::Cassandra.client = nil
-    CassandraMigrations::Config.config = nil
+    CassandraMigrations::Config.configurations = nil
   end
   
   describe '.execute' do
