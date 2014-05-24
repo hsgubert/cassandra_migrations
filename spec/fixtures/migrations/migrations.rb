@@ -195,4 +195,15 @@ class WithPropertyMigration < CassandraMigrations::Migration
   end
 end
 
+class WithAlternateKeyspaceMigration < CassandraMigrations::Migration
+  def up
+    using_keyspace('alternative') do
+      create_table :collection_lists, options: {compact_storage: true} do |t|
+        t.uuid :id, :primary_key => true
+        t.decimal :a_decimal
+      end
+    end
+  end
+end
+
 

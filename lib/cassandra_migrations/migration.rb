@@ -13,6 +13,7 @@ module CassandraMigrations
     
     # Makes +execute+ method directly available to migrations
     delegate :execute, :to => Cassandra
+    delegate :using_keyspace, :to => Cassandra
     
     # Makes +up+ work if the method in the migration is defined with self.up
     def up

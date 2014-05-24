@@ -38,7 +38,13 @@ module CassandraMigrations
       client.close if client.connected?
       self.client = nil
     end
-    
+
+    def self.using_keyspace(keyspace, &block)
+      use(keyspace)
+      block.call
+      use(Config.keyspace)
+    end
+
     def self.use(keyspace)
       connect_to_server unless client
 

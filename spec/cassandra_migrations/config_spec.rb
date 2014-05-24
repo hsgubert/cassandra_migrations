@@ -4,7 +4,7 @@ require 'spec_helper'
 describe CassandraMigrations::Config do
   
   before do
-    CassandraMigrations::Config.config = nil
+    CassandraMigrations::Config.configurations = nil
   end
   
   it 'should fetch values in config for the right environment' do
@@ -39,10 +39,16 @@ describe CassandraMigrations::Config do
     
     CassandraMigrations::Config.keyspace.should == 'cassandra_migrations_test'
     
-    CassandraMigrations::Config.config = nil
+    CassandraMigrations::Config.configurations = nil
     ENV.stub(:[]).with("CI").and_return("true")
     
     CassandraMigrations::Config.keyspace.should == 'cassandra_migrations_ci'
+  end
+
+  it 'allows access to configurations for other environments than the current Rails.env' do
+    Rails.stub(:root).and_return Pathname.new("spec/fixtures")
+    Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+    CassandraMigrations::Config.configurations['production'].keyspace.should == 'cassandra_migrations_production'
   end
 end
   
