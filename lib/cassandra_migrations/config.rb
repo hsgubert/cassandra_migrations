@@ -23,7 +23,7 @@ module CassandraMigrations
     def self.load_config
       begin
         configs = YAML.load(ERB.new(File.new(Rails.root.join("config", "cassandra.yml")).read).result)
-        configurations = Hash[configs.map { |env, config| [env, Configuration.new(*config.slice(*FIELDS).values)]}]
+        configurations = Hash[configs.map {|env, config| [env, Configuration.new(*(FIELDS.map {|k| config[k]}))]}]
         if configurations[Rails.env].nil?
           raise Errors::MissingConfigurationError, "No configuration for #{Rails.env} environment! Complete your config/cassandra.yml."
         end

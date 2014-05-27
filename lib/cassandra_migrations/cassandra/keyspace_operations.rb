@@ -4,27 +4,29 @@ module CassandraMigrations
   module Cassandra
     module KeyspaceOperations
   
-      def create_keyspace!
+      def create_keyspace!(env)
+        config = Config.configurations[env]
         begin
           execute(
-            "CREATE KEYSPACE #{Config.keyspace} \
+            "CREATE KEYSPACE #{config.keyspace} \
              WITH replication = { \ 
-               'class':'#{Config.replication['class']}', \
-               'replication_factor': #{Config.replication['replication_factor']} \
+               'class':'#{config.replication['class']}', \
+               'replication_factor': #{config.replication['replication_factor']} \
              }"
           )
-          use(Config.keyspace)
+          use(config.keyspace)
         rescue Exception => exception
           drop_keyspace!
           raise exception
         end
       end
       
-      def drop_keyspace!
+      def drop_keyspace!(env)
+        config = Config.configurations[env]
         begin
-          execute("DROP KEYSPACE #{Config.keyspace}")
+          execute("DROP KEYSPACE #{config.keyspace}")
         rescue Cql::QueryError
-          raise Errors::UnexistingKeyspaceError, Config.keyspace
+          raise Errors::UnexistingKeyspaceError, config.keyspace
         end
       end
     
