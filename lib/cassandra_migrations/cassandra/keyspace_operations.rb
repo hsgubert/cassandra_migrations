@@ -5,7 +5,7 @@ module CassandraMigrations
     module KeyspaceOperations
   
       def create_keyspace!(env)
-        config = Config.configurations(env)
+        config = Config.configurations[env]
         begin
           execute(
             "CREATE KEYSPACE #{config.keyspace} \
@@ -21,8 +21,8 @@ module CassandraMigrations
         end
       end
       
-      def drop_keyspace!
-        config = Config.configurations(env)
+      def drop_keyspace!(env)
+        config = Config.configurations[env]
         begin
           execute("DROP KEYSPACE #{config.keyspace}")
         rescue Cql::QueryError
