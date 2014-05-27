@@ -12,7 +12,7 @@ namespace :cassandra do
       CassandraMigrations::Cassandra.start!
       puts "Keyspace #{CassandraMigrations::Config.keyspace} already exists!"
     rescue CassandraMigrations::Errors::UnexistingKeyspaceError
-      CassandraMigrations::Cassandra.create_keyspace!
+      CassandraMigrations::Cassandra.create_keyspace!(Rails.env)
       puts "Created keyspace #{CassandraMigrations::Config.keyspace}"
     end
   end
@@ -20,7 +20,7 @@ namespace :cassandra do
   desc 'Drop keyspace in config/cassandra.yml for the current environment'
   task :drop do
     begin
-      CassandraMigrations::Cassandra.drop_keyspace!
+      CassandraMigrations::Cassandra.drop_keyspace!(Rails.env)
       puts "Dropped keyspace #{CassandraMigrations::Config.keyspace}"
     rescue CassandraMigrations::Errors::UnexistingKeyspaceError
       puts "Keyspace #{CassandraMigrations::Config.keyspace} does not exist... cannot be dropped"
