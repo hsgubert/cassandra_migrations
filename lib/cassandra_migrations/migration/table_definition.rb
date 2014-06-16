@@ -68,8 +68,6 @@ module CassandraMigrations
       def to_create_cql
         cql = []
 
-        puts @columns_name_type_hash.inspect
-
         if !@columns_name_type_hash.empty?
           @columns_name_type_hash.each do |column_name, type|
             cql << "#{column_name} #{type}"
