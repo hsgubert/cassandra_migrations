@@ -68,12 +68,22 @@ module CassandraMigrations
       def to_create_cql
         cql = []
 
+        puts @columns_name_type_hash.inspect
+
         if !@columns_name_type_hash.empty?
           @columns_name_type_hash.each do |column_name, type|
             cql << "#{column_name} #{type}"
           end
         else
           raise Errors::MigrationDefinitionError, 'No columns defined for table.'
+        end
+
+        if (@columns_name_type_hash.values.include? :counter)
+          non_key_columns = @columns_name_type_hash.keys - @primary_keys
+          counter_columns = [@columns_name_type_hash.select { |name, type| type == :counter }.first[0]]
+          if (non_key_columns - counter_columns).present?
+            raise Errors::MigrationDefinitionError, 'Non key fields not allowed in tables with counter'
+          end
         end
 
         key_info = (@primary_keys - @partition_keys)
@@ -172,6 +182,13 @@ module CassandraMigrations
         define_primary_keys(column_name) if options[:primary_key]
       end
 
+      def counter(column_name, options={})
+        @columns_name_type_hash[column_name.to_sym] = column_type_for(:counter, options)
+        if options[:primary_key]
+          raise Errors::MigrationDefinitionError, 'Counter columns cannot be primary keys'
+        end
+      end
+
       def list(column_name, options={})
         type = options[:type]
         if type.nil?
@@ -238,7 +255,7 @@ module CassandraMigrations
 
       PASSTHROUGH_TYPES = [:text, :ascii, :decimal, :double, :boolean,
                            :uuid, :timeuuid, :inet, :timestamp, :list,
-                           :map, :set]
+                           :map, :set, :counter]
       TYPES_MAP = { string: :varchar,
                     datetime: :timestamp,
                     binary: :blob }
