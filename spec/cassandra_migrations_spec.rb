@@ -306,5 +306,25 @@ describe CassandraMigrations do
         @migration.up
       end
     end
+
+    context 'counter columns' do
+      before do
+        Rails.stub(:root).and_return Pathname.new("spec/fixtures")
+        Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+      end
+
+      it 'should produce a valid CQL create statement if there are no non-key fields except for the counter' do
+        migration = WithCounterColumnMigration.new
+        migration.up
+        expected_cql = "CREATE TABLE with_counter (id uuid, counter_value counter, PRIMARY KEY(id))"
+        expect(migration.cql).to eq(expected_cql)
+      end
+
+      it 'should raise an exception when there are non-key fields other than the counter' do
+        migration = WrongWithCounterColumnMigration.new
+        puts "cql #{migration.cql}"
+        expect { migration.up }.to raise_error(CassandraMigrations::Errors::MigrationDefinitionError, /Non key fields not allowed in tables with counter/)
+      end
+    end
   end
 end

@@ -206,4 +206,23 @@ class WithAlternateKeyspaceMigration < CassandraMigrations::Migration
   end
 end
 
+class WithCounterColumnMigration < CassandraMigrations::Migration
+  def up
+    create_table :with_counter do |t|
+      t.uuid :id, :primary_key => true
+      t.counter :counter_value
+    end
+  end
+end
+
+class WrongWithCounterColumnMigration < CassandraMigrations::Migration
+  def up
+    create_table :with_counter do |t|
+      t.uuid :id, :primary_key => true
+      t.string :name
+      t.counter :counter_value
+    end
+  end
+end
+
 

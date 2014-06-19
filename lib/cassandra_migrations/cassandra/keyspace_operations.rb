@@ -16,7 +16,7 @@ module CassandraMigrations
           )
           use(config.keyspace)
         rescue Exception => exception
-          drop_keyspace!
+          drop_keyspace!(env)
           raise exception
         end
       end
