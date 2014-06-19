@@ -31,7 +31,7 @@ The native transport protocol (sometimes called binary protocol, or CQL protocol
 In your rails root directory:
 
     prepare_for_cassandra .
-    
+
 ### Configuring cassandra access
 
 Open your newly-created `config/cassandra.yml` and configure the database name for each of the environments, just like you would do for your regular database. The other options defaults should be enough for now.
@@ -52,10 +52,10 @@ There are a collection of rake tasks to help you manage the cassandra database (
 
     rake cassandra:setup
 
-### Create a test table
+### Creating a C* Table
 
     rails generate cassandra_migration create_posts
-    
+
 In your migration file, make it create a table and drop it on its way back:
 
 ```ruby
@@ -68,7 +68,7 @@ class CreatePosts < CassandraMigrations::Migration
       p.text :text
     end
   end
-  
+
   def self.down
     drop_table :posts
   end
@@ -77,7 +77,7 @@ end
 
 And now run:
 
-    rake cassandra:migrate 
+    rake cassandra:migrate
 
 To create a table with compound primary key just specify the primary keys on table creation, i.e.:
 
@@ -91,7 +91,7 @@ class CreatePosts < CassandraMigrations::Migration
       p.text :text
     end
   end
-  
+
   def self.down
     drop_table :posts
   end
@@ -111,7 +111,7 @@ class CreatePosts < CassandraMigrations::Migration
       p.text :text
     end
   end
-  
+
   def self.down
     drop_table :posts
   end
@@ -129,23 +129,84 @@ class CreatePosts < CassandraMigrations::Migration
       p.string :title
       p.text :text
     end
-    
+
     create_index :posts, :title, :name => 'by_title'
   end
-  
+
   def self.down
- 	drop_index 'by_title'
-  
+ 	 drop_index 'by_title'
+
     drop_table :posts
   end
 end
 ```
 
+#### Passing options to create_table
+
+The create_table method allow do pass a hash of options for:
+
+* Clustering Order (clustering_order): A string such as 'a_deciman DESC'
+* Compact Storage (compact_storage): Boolean, true or false
+* Wait before GC (gc_grace_seconds): Default: 864000 [10 days]
+* Others: See [CQL Table Properties](http://www.datastax.com/documentation/cql/3.1/cql/cql_reference/tabProp.html)
+
+Cassandra Migration will attempt to pass through the properties to the CREATE TABLE command.
+
+Examples:
+
+```ruby
+class WithClusteringOrderMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists, options: {
+                                      clustering_order: 'a_decimal DESC',
+                                      compact_storage: true,
+                                      gc_grace_seconds: 43200
+                                    } do |t|
+      t.uuid :id, :primary_key => true
+      t.decimal :a_decimal
+    end
+  end
+end
+```
+
+#### Using Alternate/Additional Keyspaces
+
+The using_keyspace method in a migration allows to execute that migration in
+the context of a specific keyspace:
+
+```ruby
+class WithAlternateKeyspaceMigration < CassandraMigrations::Migration
+  def up
+    using_keyspace('alternative') do
+      create_table :collection_lists, options: {compact_storage: true} do |t|
+        t.uuid :id, :primary_key => true
+        t.decimal :a_decimal
+      end
+    end
+  end
+end
+```
+
+The overall workflow for a multiple keyspace env:
+- define all of your keyspaces/environment combinations as separate environments
+  in `cassandra.yml`. You probably want to keep your main or default keyspace as
+  just plain `development` or 'production`, especially if you're using the
+  queries stuff (so as to confuse Rails as little as possible)
+- make sure to run `rake cassandra:create` for all of them
+- if you use `using_keyspace` in all your migrations for keyspaces defined in
+  environments other than the standard Rails ones, you won't have to run them for
+  each 'special' environment.
+
+> *Side Note*: If you're going to be using multiple keyspaces in one application
+> (specially with cql-rb), you probably want to just fully qualify your table names
+> in your queries rather than having to call `USE <keyspace>` all over the place.
+> Specially since cql-rb encourages you to only have one client object per application.
+
 There are some other helpers like `add_column` too.. take a look inside!
 
 ### Migrations for Cassandra Collections
 
-Support for C* collections is provided via the list, set and map column types. 
+Support for C* collections is provided via the list, set and map column types.
 
 ```ruby
 
@@ -172,8 +233,8 @@ There are two ways to use the cassandra interface provided by this gem
 # selects all posts
 CassandraMigrations::Cassandra.select(:posts)
 
-# more complex select query 
-CassandraMigrations::Cassandra.select(:posts, 
+# more complex select query
+CassandraMigrations::Cassandra.select(:posts,
   :projection => 'title, created_at',
   :selection => 'id > 1234',
   :order_by => 'created_at DESC',
@@ -196,7 +257,7 @@ CassandraMigrations::Cassandra.write!(:posts, {
 })
 
 # adding a new post with TTL
-CassandraMigrations::Cassandra.write!(:posts, 
+CassandraMigrations::Cassandra.write!(:posts,
   {
     :id => 9999,
     :created_at => Time.current,
@@ -207,12 +268,12 @@ CassandraMigrations::Cassandra.write!(:posts,
 )
 
 # updating a post
-CassandraMigrations::Cassandra.update!(:posts, 'id = 9999', 
+CassandraMigrations::Cassandra.update!(:posts, 'id = 9999',
   :title => 'Updated title'
 )
 
 # updating a post with TTL
-CassandraMigrations::Cassandra.update!(:posts, 'id = 9999', 
+CassandraMigrations::Cassandra.update!(:posts, 'id = 9999',
   { :title => 'Updated title' },
   :ttl => 3600
 )
@@ -315,5 +376,3 @@ To add cassandra database creation and migrations steps to your Capistrano recip
 # Acknowledgements
 
 This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job working on this gem for us.
-
-
