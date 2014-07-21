@@ -215,6 +215,16 @@ class WithCounterColumnMigration < CassandraMigrations::Migration
   end
 end
 
+class WithMultipleCounterColumnMigration < CassandraMigrations::Migration
+  def up
+    create_table :with_counter do |t|
+      t.uuid :id, :primary_key => true
+      t.counter :counter_value
+      t.counter :counter_value2
+    end
+  end
+end
+
 class WrongWithCounterColumnMigration < CassandraMigrations::Migration
   def up
     create_table :with_counter do |t|

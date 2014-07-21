@@ -78,7 +78,7 @@ module CassandraMigrations
 
         if (@columns_name_type_hash.values.include? :counter)
           non_key_columns = @columns_name_type_hash.keys - @primary_keys
-          counter_columns = [@columns_name_type_hash.select { |name, type| type == :counter }.first[0]]
+          counter_columns = @columns_name_type_hash.select { |name, type| type == :counter }.keys
           if (non_key_columns - counter_columns).present?
             raise Errors::MigrationDefinitionError, 'Non key fields not allowed in tables with counter'
           end
