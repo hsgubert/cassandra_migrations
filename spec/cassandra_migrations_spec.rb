@@ -319,6 +319,12 @@ describe CassandraMigrations do
         expected_cql = "CREATE TABLE with_counter (id uuid, counter_value counter, PRIMARY KEY(id))"
         expect(migration.cql).to eq(expected_cql)
       end
+      it 'should produce a valid CQL create statement if there are no non-key fields except for the counter with multiple counters' do
+        migration = WithMultipleCounterColumnMigration.new
+        migration.up
+        expected_cql = "CREATE TABLE with_counter (id uuid, counter_value counter, counter_value2 counter, PRIMARY KEY(id))"
+        expect(migration.cql).to eq(expected_cql)
+      end
 
       it 'should raise an exception when there are non-key fields other than the counter' do
         migration = WrongWithCounterColumnMigration.new
