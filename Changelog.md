@@ -1,3 +1,12 @@
+### 0.2.0 / 2014-10-15
+
+* Enhancements
+  * Refactored code base to use the official ('cassandra-driver', '~> 1.0.0.beta.3') [DataStax C* driver](https://rubygems.org/gems/cassandra-driver)
+  * Codebase remains backwards compatible
+  * Should support new features available via the new driver (authentication, server/client certs, compression and other connection params). See [driver docs](http://datastax.github.io/ruby-driver/api/)
+  * Updated to the latest version of RSpec (3.1.0)
+  * Updated other development dependencies (bundler, simplecov, coveralls)
+
 ### 0.1.0 / 2014-06-18
 
 * Enhancements
