@@ -21,14 +21,13 @@ Gem::Specification.new do |s|
   s.executables = ['prepare_for_cassandra']
 
   # s.add_dependency: Production dependencies
-  #s.add_dependency 'cql-rb', '2.0.3'
   s.add_dependency 'cassandra-driver', '~> 1.0.0.beta.3'
   s.add_dependency 'rake', '~> 10'
   s.add_dependency 'rails', '>= 3.2'
   s.add_dependency 'colorize', '~> 0.7.3'
 
   # s.add_development_dependency: Development dependencies
-  s.add_development_dependency 'rspec', '~> 2.99'
+  s.add_development_dependency 'rspec', '~> 3.1.0'
   s.add_development_dependency 'debugger', '~> 1.6'
   s.add_development_dependency 'bundler', '~> 1.3'
   s.add_development_dependency 'simplecov', '~> 0.8'

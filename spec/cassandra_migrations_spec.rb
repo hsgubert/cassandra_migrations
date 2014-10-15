@@ -22,13 +22,13 @@ end
 describe CassandraMigrations do
 
   it "should define modules" do
-    defined?(CassandraMigrations).should be_truthy
-    defined?(CassandraMigrations::Railtie).should be_truthy
-    defined?(CassandraMigrations::Cassandra).should be_truthy
-    defined?(CassandraMigrations::Errors).should be_truthy
-    defined?(CassandraMigrations::Migration).should be_truthy
-    defined?(CassandraMigrations::Migrator).should be_truthy
-    defined?(CassandraMigrations::Config).should be_truthy
+    expect(defined?(CassandraMigrations)).to be_truthy
+    expect(defined?(CassandraMigrations::Railtie)).to be_truthy
+    expect(defined?(CassandraMigrations::Cassandra)).to be_truthy
+    expect(defined?(CassandraMigrations::Errors)).to be_truthy
+    expect(defined?(CassandraMigrations::Migration)).to be_truthy
+    expect(defined?(CassandraMigrations::Migrator)).to be_truthy
+    expect(defined?(CassandraMigrations::Config)).to be_truthy
   end
 
   context 'a migration' do
@@ -285,12 +285,12 @@ describe CassandraMigrations do
     context 'using a different keyspace' do
       before do
         @migration = WithAlternateKeyspaceMigration.new
-        Rails.stub(:root).and_return Pathname.new("spec/fixtures")
-        Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+        allow(Rails).to receive(:root).and_return Pathname.new("spec/fixtures")
+        allow(Rails).to receive(:env).and_return ActiveSupport::StringInquirer.new("development")
       end
 
       it 'should produce a valid CQL create statement' do
-        CassandraMigrations::Cassandra.stub(:use)
+        allow(CassandraMigrations::Cassandra).to receive(:use)
         @migration.up
         expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH COMPACT STORAGE"
         expect(@migration.cql).to eq(expected_cql)
@@ -300,17 +300,17 @@ describe CassandraMigrations do
 
         expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH COMPACT STORAGE"
         original_keyspace = CassandraMigrations::Config.keyspace
-        CassandraMigrations::Cassandra.should_receive(:use).with('alternative')
-        @migration.should_receive(:execute).with(expected_cql)
-        CassandraMigrations::Cassandra.should_receive(:use).with(original_keyspace)
+        allow(CassandraMigrations::Cassandra).to receive(:use).with('alternative')
+        allow(@migration).to receive(:execute).with(expected_cql)
+        allow(CassandraMigrations::Cassandra).to receive(:use).with(original_keyspace)
         @migration.up
       end
     end
 
     context 'counter columns' do
       before do
-        Rails.stub(:root).and_return Pathname.new("spec/fixtures")
-        Rails.stub(:env).and_return ActiveSupport::StringInquirer.new("development")
+        allow(Rails).to receive(:root).and_return Pathname.new("spec/fixtures")
+        allow(Rails).to receive(:env).and_return ActiveSupport::StringInquirer.new("development")
       end
 
       it 'should produce a valid CQL create statement if there are no non-key fields except for the counter' do
@@ -328,7 +328,6 @@ describe CassandraMigrations do
 
       it 'should raise an exception when there are non-key fields other than the counter' do
         migration = WrongWithCounterColumnMigration.new
-        puts "cql #{migration.cql}"
         expect { migration.up }.to raise_error(CassandraMigrations::Errors::MigrationDefinitionError, /Non key fields not allowed in tables with counter/)
       end
     end
