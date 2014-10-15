@@ -16,14 +16,14 @@ describe CassandraMigrations::Cassandra do
   describe '.execute' do
     it 'should connect to cassandra using host and port configured' do
       cql_client_mock = double('cql_client')
-      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
+      Client.should_receive(:connect).with(:hosts => ['127.0.0.1'], :port => 9042).and_return(cql_client_mock)
       cql_client_mock.should_receive(:execute).with('anything').and_return(nil)
 
       CassandraMigrations::Cassandra.execute('anything').should be_nil
     end
 
     it 'raise exception if there is something wrong with the connection' do
-      Cql::Client.should_receive(:connect).and_raise(Cql::Io::ConnectionError)
+      Client.should_receive(:connect).and_raise(Cassandra::Io::ConnectionError)
 
       expect {
         CassandraMigrations::Cassandra.execute('anything')
@@ -45,7 +45,7 @@ describe CassandraMigrations::Cassandra do
   describe '.use' do
     it 'should connect to cassandra using host and port configured' do
       cql_client_mock = double('cql_client')
-      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
+      Client.should_receive(:connect).with(:hosts => ['127.0.0.1'], :port => 9042).and_return(cql_client_mock)
       cql_client_mock.should_receive(:use).with('anything').and_return(nil)
 
       CassandraMigrations::Cassandra.use('anything').should be_nil
@@ -62,7 +62,7 @@ describe CassandraMigrations::Cassandra do
     it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
       cql_client_mock = double('cql_client')
       original_keyspace = CassandraMigrations::Config.keyspace
-      Cql::Client.should_receive(:connect).with(:host => '127.0.0.1', :port => 9042).and_return(cql_client_mock)
+      Client.should_receive(:connect).with(:hosts => ['127.0.0.1'], :port => 9042).and_return(cql_client_mock)
       cql_client_mock.should_receive(:use).with('anything').and_return(nil)
       cql_client_mock.should_receive(:use).with(original_keyspace).and_return(nil)
       expect { |block| CassandraMigrations::Cassandra.using_keyspace('anything', &block) }.to yield_control

@@ -1,7 +1,8 @@
 # encoding: utf-8
 
 require 'yaml'
-require 'cql'
+require 'cassandra'
+require_relative 'cql-rb-wrapper'
 require 'cassandra_migrations/cassandra/queries'
 require 'cassandra_migrations/cassandra/query_result'
 require 'cassandra_migrations/cassandra/keyspace_operations'
@@ -10,9 +11,9 @@ module CassandraMigrations
   module Cassandra
     extend Queries
     extend KeyspaceOperations
-  
+
     mattr_accessor :client
-    
+
     def self.start!
       begin
         # setup keyspace use
@@ -20,10 +21,10 @@ module CassandraMigrations
       rescue Errors::MissingConfigurationError
         # It's acceptable to not have a configuration file, that's why we rescue this exception.
         # On the other hand, if the user try to execute a query this same exception won't be rescued
-        Rails.logger.try(:warn, "There is no config/cassandra.yml. Skipping connection to Cassandra...") 
+        Rails.logger.try(:warn, "There is no config/cassandra.yml. Skipping connection to Cassandra...")
       end
     end
-    
+
     def self.restart!
       raise Errors::ClientNotStartedError unless client
 
@@ -31,7 +32,7 @@ module CassandraMigrations
       self.client = nil
       start!
     end
-    
+
     def self.shutdown!
       raise Errors::ClientNotStartedError unless client
 
@@ -50,7 +51,8 @@ module CassandraMigrations
 
       begin
         client.use(keyspace)
-      rescue Cql::QueryError # keyspace does not exist
+      rescue Exception => e # keyspace does not exist
+        puts "#{e} : #{e.message}"
         raise Errors::UnexistingKeyspaceError, keyspace
       end
     end
@@ -60,17 +62,18 @@ module CassandraMigrations
       Rails.logger.try(:info, "\e[1;35m [Cassandra Migrations] \e[0m #{cql.to_s}")
       result = client.execute(cql)
       QueryResult.new(result) if result
-    end  
-    
+    end
+
   private
-    
+
     def self.connect_to_server
-      Rails.logger.try(:info, "Connecting to Cassandra on #{Config.host}:#{Config.port}")
-      
+      connection_params = Config.connection_config_for_env
+      Rails.logger.try(:info, "Connecting to Cassandra on #{connection_params}")
+
       begin
-        self.client = Cql::Client.connect(:host => Config.host, :port => Config.port)
-      rescue Cql::Io::ConnectionError => e
-        raise Errors::ConnectionError, e.message      
+        self.client = Client.connect(connection_params)
+      rescue Ione::Io::ConnectionError => e
+        raise Errors::ConnectionError, e.message
       end
     end
   end

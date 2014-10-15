@@ -38,13 +38,15 @@ Open your newly-created `config/cassandra.yml` and configure the database name f
 
 ```ruby
 development:
-  host: '127.0.0.1'
+  hosts: ['127.0.0.1']
   port: 9042
   keyspace: 'my_keyspace_name'
   replication:
     class: 'SimpleStrategy'
     replication_factor: 1
 ```
+
+>> *SUPPORTED CONFIGURATION OPTIONS*: For a list of supported options see the docs for [Cassandra module, connect method](http://datastax.github.io/ruby-driver/api/) in the [DataStax Ruby Driver](https://github.com/datastax/ruby-driver)
 
 ### Create your database
 
@@ -375,4 +377,5 @@ To add cassandra database creation and migrations steps to your Capistrano recip
 
 # Acknowledgements
 
-This gem is built upon the [cql-rb](https://github.com/iconara/cql-rb) gem, and I thank Theo for doing an awesome job working on this gem for us.
+This gem is built upon the official [Ruby Driver for Apache Cassandra](https://github.com/datastax/ruby-driver) by DataStax.
+Which supersedes the [cql-rb](https://github.com/iconara/cql-rb) gem (thank you Theo for doing an awesome job).

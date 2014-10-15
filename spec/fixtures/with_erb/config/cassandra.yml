@@ -1,5 +1,5 @@
 development:
-  host: "127.0.0.1"
+  hosts: ['127.0.0.1']
   port: 9042
   keyspace: "cassandra_migrations_development"
   replication:
@@ -7,15 +7,15 @@ development:
     replication_factor: 1
 
 test:
-  host: "127.0.0.1"
+  hosts: ['127.0.0.1']
   port: 9042
   keyspace: <%= ENV['CI'] ? "cassandra_migrations_ci" : "cassandra_migrations_test" %>
   replication:
     class: "SimpleStrategy"
     replication_factor: 1
-    
+
 production:
-  host: "127.0.0.1"
+  hosts: ['127.0.0.1']
   port: 9042
   keyspace: "cassandra_migrations_production"
   replication:
