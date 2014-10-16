@@ -16,21 +16,21 @@ module CassandraMigrations
       #
       # C* Data Types. See http://www.datastax.com/documentation/cql/3.0/cql/cql_reference/cql_data_types_c.html
       #
-
-      # Migration  | CQL Type	| Ruby          | Description
+      # ------------------------------------------------------------------------
+      # Migration  | CQL Type	 | Ruby          | Description
       # Type       |           | Class         |
       # ------------------------------------------------------------------------
       # string     | varchar	 | String        | UTF-8 encoded string
-      # text       | text	    | String	      | UTF-8 encoded string
-      # ascii      | ascii     | String	      | US-ASCII character string
+      # text       | text	     | String	       | UTF-8 encoded string
+      # ascii      | ascii     | String	       | US-ASCII character string
       # ------------------------------------------------------------------------
       # integer(4) | int	     | Integer	     | 32-bit signed integer
-      # integer(8) | bigint	  | Fixnum        | 64-bit signed long
+      # integer(8) | bigint	   | Fixnum         | 64-bit signed long
       # varint	   | varint    | Bignum        | Arbitrary-precision integer
       # ------------------------------------------------------------------------
-      # decimal	  | decimal   | BigDecimal    | Variable-precision decimal
+      # decimal	   | decimal   | BigDecimal    | Variable-precision decimal
       # float(4)	 | float	   |               | 32-bit IEEE-754 floating point
-      # double     | double	  |	             | Float 64-bit IEEE-754 floating point
+      # double     | double	   |	             | Float 64-bit IEEE-754 floating point
       # float(8)   | double    |               |
       # ------------------------------------------------------------------------
       # boolean    | boolean	 | TrueClass     | true or false
@@ -46,19 +46,17 @@ module CassandraMigrations
       #            |           |               | bytes since epoch
       # datetime   | timestamp |               |
       # ------------------------------------------------------------------------
-      # list       | list	    | Array	       | A collection of one or more
+      # list       | list	     | Array	       | A collection of one or more
       #            |           |               | ordered elements
-      # map        | map	     | Hash	        | A JSON-style array of literals:
+      # map        | map	     | Hash	         | A JSON-style array of literals:
       #            |           |               | { literal : literal, ... }
       # set        | set	     | Set	         | A collection of one or more
       #            |           |               | elements
-      # binary     | blob	    | 	            | Arbitrary bytes (no validation),
+      # binary     | blob	     | 	             | Arbitrary bytes (no validation),
       #            |           |               | expressed as hexadecimal
       # 	         | counter   |               | Distributed counter value
       #            |           |               | (64-bit long)
-
-
-
+      # ------------------------------------------------------------------------
       def initialize()
         @columns_name_type_hash = {}
         @primary_keys = []
@@ -67,32 +65,9 @@ module CassandraMigrations
 
       def to_create_cql
         cql = []
-
-        if !@columns_name_type_hash.empty?
-          @columns_name_type_hash.each do |column_name, type|
-            cql << "#{column_name} #{type}"
-          end
-        else
-          raise Errors::MigrationDefinitionError, 'No columns defined for table.'
-        end
-
-        if (@columns_name_type_hash.values.include? :counter)
-          non_key_columns = @columns_name_type_hash.keys - @primary_keys
-          counter_columns = @columns_name_type_hash.select { |name, type| type == :counter }.keys
-          if (non_key_columns - counter_columns).present?
-            raise Errors::MigrationDefinitionError, 'Non key fields not allowed in tables with counter'
-          end
-        end
-
-        key_info = (@primary_keys - @partition_keys)
-        key_info = ["(#{@partition_keys.join(', ')})", *key_info] if @partition_keys.any?
-
-        if key_info.any?
-          cql << "PRIMARY KEY(#{key_info.join(', ')})"
-        else
-          raise Errors::MigrationDefinitionError, 'No primary key defined.'
-        end
-
+        build_name_type_cql(cql)
+        check_for_non_key_fields_in_counter_table
+        build_pk_clause(cql)
         cql.join(', ')
       end
 
@@ -188,29 +163,11 @@ module CassandraMigrations
       end
 
       def list(column_name, options={})
-        type = options[:type]
-        if type.nil?
-          raise Errors::MigrationDefinitionError, 'A list must define a collection type.'
-        elsif !self.respond_to?(type)
-          raise Errors::MigrationDefinitionError, "Type '#{type}' is not valid for cassandra migration."
-        end
-        if options[:primary_key]
-          raise Errors::MigrationDefinitionError, 'A collection cannot be used as a primary key.'
-        end
-        @columns_name_type_hash[column_name.to_sym] = :"list<#{column_type_for(type)}>"
+        list_or_set(:list, column_name, options)
       end
 
       def set(column_name, options={})
-        type = options[:type]
-        if type.nil?
-          raise Errors::MigrationDefinitionError, 'A set must define a collection type.'
-        elsif !self.respond_to?(type)
-          raise Errors::MigrationDefinitionError, "Type '#{type}' is not valid for cassandra migration."
-        end
-        if options[:primary_key]
-          raise Errors::MigrationDefinitionError, 'A collection cannot be used as a primary key.'
-        end
-        @columns_name_type_hash[column_name.to_sym] = :"set<#{column_type_for(type)}>"
+        list_or_set(:set, column_name, options)
       end
 
       def map(column_name, options={})
@@ -292,6 +249,50 @@ module CassandraMigrations
           else
             "#{cql_name} = #{value}"
         end
+      end
+
+      def build_name_type_cql(cql)
+        if !@columns_name_type_hash.empty?
+          @columns_name_type_hash.each do |column_name, type|
+            cql << "#{column_name} #{type}"
+          end
+        else
+          raise Errors::MigrationDefinitionError, 'No columns defined for table.'
+        end
+      end
+
+      def check_for_non_key_fields_in_counter_table
+        if (@columns_name_type_hash.values.include? :counter)
+          non_key_columns = @columns_name_type_hash.keys - @primary_keys
+          counter_columns = @columns_name_type_hash.select { |name, type| type == :counter }.keys
+          if (non_key_columns - counter_columns).present?
+            raise Errors::MigrationDefinitionError, 'Non key fields not allowed in tables with counter'
+          end
+        end
+      end
+
+      def build_pk_clause(cql)
+        key_info = (@primary_keys - @partition_keys)
+        key_info = ["(#{@partition_keys.join(', ')})", *key_info] if @partition_keys.any?
+
+        if key_info.any?
+          cql << "PRIMARY KEY(#{key_info.join(', ')})"
+        else
+          raise Errors::MigrationDefinitionError, 'No primary key defined.'
+        end
+      end
+
+      def list_or_set(collection_type, column_name, options={})
+        type = options[:type]
+        if type.nil?
+          raise Errors::MigrationDefinitionError, "A #{collection_type} must define a collection type."
+        elsif !self.respond_to?(type)
+          raise Errors::MigrationDefinitionError, "Type '#{type}' is not valid for cassandra migration."
+        end
+        if options[:primary_key]
+          raise Errors::MigrationDefinitionError, 'A collection cannot be used as a primary key.'
+        end
+        @columns_name_type_hash[column_name.to_sym] = :"#{collection_type}<#{column_type_for(type)}>"
       end
 
     end
