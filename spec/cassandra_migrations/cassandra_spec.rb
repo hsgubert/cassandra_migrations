@@ -23,11 +23,11 @@ describe CassandraMigrations::Cassandra do
     end
 
     it 'raise exception if there is something wrong with the connection' do
-      allow(Client).to receive(:connect).and_raise(Cassandra::Io::ConnectionError)
+      allow(Client).to receive(:connect).and_raise(Cassandra::Error)
 
       expect {
         CassandraMigrations::Cassandra.execute('anything')
-      }.to raise_exception CassandraMigrations::Errors::ConnectionError
+      }.to raise_exception Exception
     end
 
     it 'should return a QueryResult if the query returns something' do

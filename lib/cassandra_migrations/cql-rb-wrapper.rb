@@ -34,7 +34,7 @@ end
 
 class Client
   def self.connect(options)
-    @cluster = Cassandra.connect(options)
+    @cluster = Cassandra.cluster(options)
     self.new(@cluster)
   end
 
