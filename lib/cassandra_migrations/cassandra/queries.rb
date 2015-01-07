@@ -110,7 +110,7 @@ module CassandraMigrations
           hash_to_cql(value, operation)
         else
           value = value.to_s
-          if value == "nil"
+          if value == ""
             value = 'null'
           else
             value = value
