@@ -31,6 +31,19 @@ describe CassandraMigrations::Cassandra::Queries do
       )
     end
 
+    it 'should insert a record into the specified table with a nil value for non-string type' do
+      allow(TestQueryExecutor).to receive(:execute).with(
+      "INSERT INTO people (name, age, height_in_meters, birth_time) VALUES ('John', 24, 1.83, null)"
+      )
+
+      TestQueryExecutor.write!('people',
+      :name => 'John',
+      :age => 24,
+      :height_in_meters => 1.83,
+      :birth_time => nil
+      )
+    end
+
     it 'should set record TTL' do
       allow(TestQueryExecutor).to receive(:execute).with(
         "INSERT INTO people (name) VALUES ('John') USING TTL 3600"
@@ -82,6 +95,17 @@ describe CassandraMigrations::Cassandra::Queries do
       TestQueryExecutor.update!('people', "name = 'John'",
         :height_in_meters => 1.93,
         :birth_time => Time.new(1989, 05, 28, 8, 50, 25, 0)
+      )
+    end
+
+    it 'should update some record values with a nil value for a non-string type' do
+      allow(TestQueryExecutor).to receive(:execute).with(
+      "UPDATE people SET height_in_meters = null, birth_time = '1989-05-28 08:50:25+0000' WHERE name = 'John'"
+      )
+
+      TestQueryExecutor.update!('people', "name = 'John'",
+      :height_in_meters => nil,
+      :birth_time => Time.new(1989, 05, 28, 8, 50, 25, 0)
       )
     end
 
