@@ -24,17 +24,19 @@ This enables you to use Cassandra in an organized way, combined with your Active
 
 ### Configure Cassandra
 
-The native transport protocol (sometimes called binary protocol, or CQL protocol) is not on by default in Cassandra 1.2, to enable it edit the `CASSANDRA_DIR/conf/cassandra.yaml` file on all nodes in your cluster and set `start_native_transport` to `true`. You need to restart the nodes for this to have effect.
+The native transport protocol (sometimes called binary protocol, or CQL protocol) is not on by default on all version of Cassandra. If it is not you can enable by editing the `CASSANDRA_DIR/conf/cassandra.yaml` file on all nodes in your cluster and set `start_native_transport` to `true`. You need to restart the nodes for this to have effect.
 
 ### Prepare Project
 
-In your rails root directory:
+In your rails root directory run:
 
     prepare_for_cassandra .
+    
+Which create the `config/cassandra.yml`
 
 ### Configuring cassandra access
 
-Open your newly-created `config/cassandra.yml` and configure the database name for each of the environments, just like you would do for your regular database. The other options defaults should be enough for now.
+Open the newly-created `config/cassandra.yml` and configure the database name for each of the environments, just like you would do for your regular database. The other options defaults should be enough for now.
 
 ```ruby
 development:
@@ -147,7 +149,7 @@ end
 
 The create_table method allow do pass a hash of options for:
 
-* Clustering Order (clustering_order): A string such as 'a_deciman DESC'
+* Clustering Order (clustering_order): A string such as 'a_decimal DESC'
 * Compact Storage (compact_storage): Boolean, true or false
 * Wait before GC (gc_grace_seconds): Default: 864000 [10 days]
 * Others: See [CQL Table Properties](http://www.datastax.com/documentation/cql/3.1/cql/cql_reference/tabProp.html)
@@ -284,7 +286,7 @@ CassandraMigrations::Cassandra.update!(:posts, 'id = 9999',
 CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234')
 
 # deleting a post title
-CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234'
+CassandraMigrations::Cassandra.delete!(:posts, 'id = 1234',
   :projection => 'title'
 )
 
