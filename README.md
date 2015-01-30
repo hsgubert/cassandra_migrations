@@ -109,7 +109,7 @@ class CreatePosts < CassandraMigrations::Migration
   def up
     create_table :posts, :partition_keys => [:id, :created_month], :primary_keys => [:created_at] do |p|
       p.integer :id
-      p.string :creation_month
+      p.string :created_month
       p.timestamp :created_at
       p.string :title
       p.text :text
