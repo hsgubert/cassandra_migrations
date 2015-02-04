@@ -34,7 +34,13 @@ end
 
 class Client
   def self.connect(options)
-    @cluster = Cassandra.cluster(options)
+    if defined?(Spring)
+      Spring.after_fork do
+        @cluster = Cassandra.cluster(options)
+      end
+    else
+      @cluster = Cassandra.cluster(options)
+    end
     self.new(@cluster)
   end
 
