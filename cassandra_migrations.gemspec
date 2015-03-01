@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.2.1'
-  s.date        = '2014-12-23'
+  s.version     = '0.2.2'
+  s.date        = '2015-03-01'
   s.license     = 'MIT'
   s.summary     = 'Cassandra schema management for a multi-environment developer.'
   s.description = 'A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.'
@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.executables = ['prepare_for_cassandra']
 
   # s.add_dependency: Production dependencies
-  s.add_dependency 'cassandra-driver', '~> 1.1.1'
+  s.add_dependency 'cassandra-driver', '~> 2.1.1'
   s.add_dependency 'rake', '~> 10'
   s.add_dependency 'rails', '>= 3.2'
   s.add_dependency 'colorize', '~> 0.7.3'
