@@ -44,6 +44,19 @@ describe CassandraMigrations::Cassandra::Queries do
       )
     end
 
+    it 'should insert a record into the specified table with a string value containing a single quote' do
+      allow(TestQueryExecutor).to receive(:execute).with(
+      "INSERT INTO people (name, age, height_in_meters, birth_time) VALUES ('John''s name', 24, 1.83, null)"
+      )
+
+      TestQueryExecutor.write!('people',
+      :name => "John's name",
+      :age => 24,
+      :height_in_meters => 1.83,
+      :birth_time => nil
+      )
+    end
+
     it 'should set record TTL' do
       allow(TestQueryExecutor).to receive(:execute).with(
         "INSERT INTO people (name) VALUES ('John') USING TTL 3600"
