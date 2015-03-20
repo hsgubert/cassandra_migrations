@@ -41,6 +41,7 @@ module CassandraMigrations
 
       def select(table, options={})
         query_string = "SELECT #{options[:projection] || '*'} FROM #{table}"
+        options[:secondary_options] ||= {}
 
         if options[:selection]
           query_string << " WHERE #{options[:selection]}"
@@ -58,7 +59,40 @@ module CassandraMigrations
           query_string << " ALLOW FILTERING"
         end
 
-        execute(query_string)
+        #Secondary options
+        if options[:page_size]
+          options[:secondary_options][:page_size] = options[:page_size]
+        end
+
+        if options[:consistency]
+          options[:secondary_options][:consistency] = options[:consistency]
+        end
+
+        if options[:trace]
+          options[:secondary_options][:trace] = options[:trace]
+        end
+
+        if options[:timeout]
+          options[:secondary_options][:timeout] = options[:timeout]
+        end
+
+        if options[:serial_consistency]
+          options[:secondary_options][:serial_consistency] = options[:serial_consistency]
+        end
+
+        if options[:paging_state]
+          options[:secondary_options][:paging_state] = options[:paging_state]
+        end
+
+        if options[:arguments]
+          options[:secondary_options][:arguments] = options[:arguments]
+        end
+
+        if options[:secondary_options].length > 0
+          execute(query_string, options[:secondary_options])
+        else
+          execute(query_string)
+        end
       end
 
       def delete!(table, selection, options={})

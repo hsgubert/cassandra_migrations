@@ -57,10 +57,10 @@ module CassandraMigrations
       end
     end
 
-    def self.execute(cql)
+    def self.execute(*cql)
       connect_to_server unless client
       Rails.logger.try(:info, "\e[1;35m [Cassandra Migrations] \e[0m #{cql.to_s}")
-      result = client.execute(cql)
+      result = client.execute(*cql)
       QueryResult.new(result) if result
     end
 

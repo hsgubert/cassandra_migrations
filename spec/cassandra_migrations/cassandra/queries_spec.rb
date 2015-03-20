@@ -222,6 +222,32 @@ describe CassandraMigrations::Cassandra::Queries do
   end
 
   describe '.select' do
+    it 'should make select query with page_size' do
+      allow(TestQueryExecutor).to receive(:execute).with(
+        "SELECT * FROM people WHERE name = 'John' ORDER BY birth_time", page_size: 200
+      )
+
+      TestQueryExecutor.select(
+        'people',
+        :selection => "name = 'John'",
+        :order_by => 'birth_time',
+        :page_size => 200
+      )
+    end
+
+    it 'should make select query with page_size in secondary options hash' do
+      allow(TestQueryExecutor).to receive(:execute).with(
+        "SELECT * FROM people WHERE name = 'John' ORDER BY birth_time", page_size: 200
+      )
+
+      TestQueryExecutor.select(
+        'people',
+        :selection => "name = 'John'",
+        :order_by => 'birth_time',
+        :secondary_options => {:page_size => 200}
+      )
+    end
+
     it 'should make select query with WHERE, ORDER BY and LIMIT' do
       allow(TestQueryExecutor).to receive(:execute).with(
         "SELECT * FROM people WHERE name = 'John' ORDER BY birth_time LIMIT 200"
