@@ -43,7 +43,7 @@ module CassandraMigrations
     def self.read_current_version
       begin
         Cassandra.select(METADATA_TABLE, :selection => "data_name='version'", :projection => 'data_value').first['data_value'].to_i
-      rescue ::Cassandra::Errors::QueryError => e # table cassandra_migrations_metadata does not exist
+      rescue ::Cassandra::Errors::InvalidError => e # table cassandra_migrations_metadata does not exist
         Cassandra.execute("CREATE TABLE #{METADATA_TABLE} (data_name varchar PRIMARY KEY, data_value varchar)")
         Cassandra.write!(METADATA_TABLE, {:data_name => 'version', :data_value => '0'})
         return 0
