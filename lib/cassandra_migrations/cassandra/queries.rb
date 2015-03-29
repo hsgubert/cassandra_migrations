@@ -113,13 +113,13 @@ module CassandraMigrations
           if value == ""
             value = 'null'
           else
-            value = value
+            value = value.gsub("'", "''")
           end
         end
       end
 
       def string_to_cql(value)
-        "'#{value}'"
+        "'#{value.gsub("'", "''")}'"
       end
 
       def datetime_to_cql(value)
@@ -138,7 +138,7 @@ module CassandraMigrations
       end
 
       def hash_to_cql(value, operation)
-        "#{operation}{ #{value.reduce([]) {|sum, (key, value)| sum << "'#{key}': '#{value}'" }.join(", ") } }"
+        "#{operation}{ #{value.reduce([]) {|sum, (key, value)| sum << "'#{key}': #{to_cql_value(nil, v, nil)}" }.join(", ") } }"
       end
 
     end
