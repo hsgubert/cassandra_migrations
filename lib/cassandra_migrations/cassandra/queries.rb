@@ -172,7 +172,7 @@ module CassandraMigrations
       end
 
       def hash_to_cql(value, operation)
-        "#{operation}{ #{value.reduce([]) {|sum, (key, value)| sum << "'#{key}': #{to_cql_value(nil, v, nil)}" }.join(", ") } }"
+        "#{operation}{ #{value.reduce([]) {|sum, (k, v)| sum << "'#{k}': #{to_cql_value(nil, v, nil)}" }.join(", ") } }"
       end
 
     end
