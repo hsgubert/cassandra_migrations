@@ -127,7 +127,7 @@ module CassandraMigrations
 
       def get_column_type(table, column)
         column_info = client.execute("SELECT VALIDATOR FROM system.schema_columns WHERE keyspace_name = '#{client.keyspace}' AND columnfamily_name = '#{table}' AND column_name = '#{column}'")
-        SYMBOL_FOR_TYPE[column_info.first['validator']]
+        SYMBOL_FOR_TYPE[(column_info.first['validator'].split(/[\.(]/) & SYMBOL_FOR_TYPE.keys).first]
       end
 
       def to_cql_value(column, value, table, options={})
