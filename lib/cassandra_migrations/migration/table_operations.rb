@@ -65,26 +65,6 @@ module CassandraMigrations
         execute drop_index_cql
       end
 
-      def create_table(table_name, options = {})
-        table_definition = TableDefinition.new
-        table_definition.define_primary_keys(options[:primary_keys]) if options[:primary_keys]
-        table_definition.define_partition_keys(options[:partition_keys]) if options[:partition_keys]
-        table_definition.define_options(options[:options]) if options[:options]
-
-        yield table_definition if block_given?
-
-        announce_operation "create_table(#{table_name})"
-
-        create_cql =  "CREATE TABLE #{table_name} ("
-        create_cql << table_definition.to_create_cql
-        create_cql << ")"
-        create_cql << table_definition.options
-
-        announce_suboperation create_cql
-
-        execute create_cql
-      end
-
     end
   end
 end

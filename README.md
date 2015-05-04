@@ -31,7 +31,7 @@ The native transport protocol (sometimes called binary protocol, or CQL protocol
 In your rails root directory run:
 
     prepare_for_cassandra .
-    
+
 Which create the `config/cassandra.yml`
 
 ### Configuring cassandra access
@@ -231,7 +231,7 @@ end
 
 There are two ways to use the cassandra interface provided by this gem
 
-#### 1. Acessing through query helpers
+#### 1. Accessing through query helpers
 
 ```ruby
 # selects all posts
@@ -251,6 +251,32 @@ CassandraMigrations::Cassandra.select(:posts,
   :selection => 'id = 6bc939c2-838e-11e3-9706-4f2824f98172',
   :allow_filtering => true  # needed for potentially expensive queries
 )
+
+# secondary options
+If using gem version 0.2.3+, you can also select based on secondary options listed [here](http://datastax.github.io/ruby-driver/api/session/#execute_async-instance_method).
+
+For instance, for the above query you might want your results to be paginated with 50 results on each page with a timeout of 200 seconds:
+CassandraMigrations::Cassandra.select(:posts,
+  :projection => 'title, created_at',
+  :selection => 'id > 1234',
+  :order_by => 'created_at DESC',
+  :limit => 10,
+  :page_size => 50,
+  :timeout => 200
+)
+
+All listed options in the linked page above are supported though you can also pass in any secondary options using a "secondary_options" hash as shown below:
+CassandraMigrations::Cassandra.select(:posts,
+  :projection => 'title, created_at',
+  :selection => 'id > 1234',
+  :order_by => 'created_at DESC',
+  :limit => 10,
+  {:secondary_options =>
+    {:page_size => 50,
+    {:timeout => 200}}
+)
+
+
 
 # adding a new post
 CassandraMigrations::Cassandra.write!(:posts, {

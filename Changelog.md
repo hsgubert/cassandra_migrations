@@ -1,3 +1,25 @@
+### 0.2.3 / 2015-04-22
+* Enhancements
+  * Single quotes in value strings are automatically escaped
+  * Support for [secondary options](http://datastax.github.io/ruby-driver/api/session/#execute_async-instance_method) with the `select` method
+* Bug fixes
+  * Removed `QueryError` since it no longer is an error module in the Cassandra Ruby driver
+  * Fixed list type not working
+
+
+### 0.2.2 / 2015-03-01
+* Enhancements
+  * Support for inserting nil values from Rails into C*
+  * Spring initializer used in cql-rb wrapper
+  * Upgraded C* version (cassandra-driver dependency) to v2.1.1
+
+
+### 0.2.1 / 2014-12-23
+* Enhancements
+  * Upgraded C* version (cassandra-driver dependency) to v1.1.1
+* Breaking changes
+  * Removed `add_options` method from `table_operations.rb`. [See issue #47](https://github.com/hsgubert/cassandra_migrations/issues/47)
+
 ### 0.2.0 / 2014-10-15
 
 * Enhancements
