@@ -1,4 +1,4 @@
-### 0.2.3 / 2015-04-22
+### 0.2.3 / 2015-05-03
 * Enhancements
   * Single quotes in value strings are automatically escaped
   * Support for [secondary options](http://datastax.github.io/ruby-driver/api/session/#execute_async-instance_method) with the `select` method
