@@ -68,7 +68,7 @@ namespace :cassandra do
     desc 'Load the development schema in to the test keyspace'
     task :prepare do
       Rails.env = 'test'
-      Rake::Task['cassandra:setup'].execute
+      Rake::Task['cassandra:reset'].execute
     end
   end
 
