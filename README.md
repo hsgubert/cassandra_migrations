@@ -54,7 +54,7 @@ development:
 
 There are a collection of rake tasks to help you manage the cassandra database (`rake cassandra:create`, `rake cassandra:migrate`, `rake cassandra:drop`, etc.). For now this one does the trick:
 
-    rake cassandra:setup
+    rake cassandra:reset
 
 ### Creating a C* Table
 
