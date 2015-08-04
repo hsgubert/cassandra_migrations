@@ -35,6 +35,22 @@ module CassandraMigrations
 
         execute create_cql
       end
+      
+      def alter_table(table_name, options={})
+        table_definition = TableDefinition.new
+        table_definition.define_options(options[:options]) if options[:options]
+
+        yield table_definition if block_given?
+
+        announce_operation "alter_table #{table_name}"
+
+        create_cql =  "ALTER TABLE #{table_name}"
+        create_cql << table_definition.options
+
+        announce_suboperation create_cql
+
+        execute create_cql
+      end
 
       def create_index(table_name, column_name, options = {})
         announce_operation "create_index(#{table_name})"
