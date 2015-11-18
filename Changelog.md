@@ -1,4 +1,4 @@
-### Unreleased
+### Unreleased (0.3.x)
 * Enhancements
   * Changes rake tasks to match behavior of corresponding the rails `db` tasks. See [Readme](https://github.com/hsgubert/cassandra_migrations/blob/master/README.md) for updated behavior.
 
