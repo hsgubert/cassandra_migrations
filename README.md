@@ -52,9 +52,15 @@ development:
 
 ### Create your database
 
-There are a collection of rake tasks to help you manage the cassandra database (`rake cassandra:create`, `rake cassandra:migrate`, `rake cassandra:drop`, etc.). For now this one does the trick:
+There are a collection of rake tasks to help you manage the cassandra database for the current `RAILS_ENV` environment.
 
-    rake cassandra:reset
+  * **`rake cassandra:create`** Creates the keyspace in `config/cassandra.yml`.
+  * **`rake cassandra:drop`** Drops the keyspace in `config/cassandra.yml`.
+  * **`rake cassandra:migrate`** Runs migrations that have not run yet.
+
+  * **`rake cassandra:migrate:reset`**  Runs `cassandra:drop`, `cassandra:create` and `cassandra:migrate`.
+
+Run `rake cassandra:migrate:reset` to get started.
 
 ### Creating a C* Table
 
@@ -73,7 +79,7 @@ class CreatePosts < CassandraMigrations::Migration
     end
   end
 
-  def self.down
+  def down
     drop_table :posts
   end
 end
@@ -96,7 +102,7 @@ class CreatePosts < CassandraMigrations::Migration
     end
   end
 
-  def self.down
+  def down
     drop_table :posts
   end
 end
@@ -116,7 +122,7 @@ class CreatePosts < CassandraMigrations::Migration
     end
   end
 
-  def self.down
+  def down
     drop_table :posts
   end
 end
@@ -137,7 +143,7 @@ class CreatePosts < CassandraMigrations::Migration
     create_index :posts, :title, :name => 'by_title'
   end
 
-  def self.down
+  def down
  	 drop_index 'by_title'
 
     drop_table :posts

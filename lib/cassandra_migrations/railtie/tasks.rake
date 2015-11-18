@@ -51,13 +51,15 @@ namespace :cassandra do
     end
   end
 
-  desc 'Resets and prepares cassandra database (all data will be lost)'
-  task :reset do
-    Rake::Task['cassandra:drop'].execute
-    Rake::Task['cassandra:create'].execute
-    Rake::Task['cassandra:migrate'].execute
+  namespace :migrate do
+    desc 'Resets and prepares cassandra database (all data will be lost)'
+    task :reset do
+      Rake::Task['cassandra:drop'].execute
+      Rake::Task['cassandra:create'].execute
+      Rake::Task['cassandra:migrate'].execute
+    end
   end
-  
+
   desc 'Prepares cassandra database'
   task :setup do
     Rake::Task['cassandra:create'].execute
@@ -65,10 +67,10 @@ namespace :cassandra do
   end
 
   namespace :test do
-    desc 'Load the development schema in to the test keyspace'
+    desc 'Load the development schema in to the test keyspace via a full reset'
     task :prepare do
       Rails.env = 'test'
-      Rake::Task['cassandra:reset'].execute
+      Rake::Task['cassandra:migrate:reset'].execute
     end
   end
 

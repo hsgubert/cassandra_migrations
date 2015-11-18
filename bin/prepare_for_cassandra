@@ -54,7 +54,7 @@ puts '[done] prepared for cassandra!'.green
 puts ''
 puts 'Your steps from here are:'.green
 puts '  1. configure '.green + 'config/cassandra.yml'.red
-puts '  2. run '.green + 'rake cassandra:reset'.red + ' and try starting your application'.green
+puts '  2. run '.green + 'rake cassandra:migrate:reset'.red + ' and try starting your application'.green
 puts '  3. create your first migration with '.green + 'rails g cassandra_migration'.red
 puts '  4. apply your migration with '.green + 'rake cassandra:migrate'.red
 puts '  5. run '.green + 'rake cassandra:test:prepare'.red + ' and start testing'.green
