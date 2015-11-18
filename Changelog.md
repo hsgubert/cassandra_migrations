@@ -1,4 +1,4 @@
-### Unreleased (0.3.x)
+### Unreleased
 * Enhancements
   * Deprecates `cassandra:setup` task in favor of `cassandra:migrate:reset`
   * More helpful error messages around cluster connection and `cassandra:create` task
