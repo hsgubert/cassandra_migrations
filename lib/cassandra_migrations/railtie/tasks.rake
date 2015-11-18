@@ -60,8 +60,8 @@ namespace :cassandra do
     end
   end
 
-  desc 'Prepares cassandra database'
   task :setup do
+    puts "DEPRECATION WARNING: `cassandra:setup` rake task has been deprecated, use `cassandra:migrate:reset` instead"
     Rake::Task['cassandra:create'].execute
     Rake::Task['cassandra:migrate'].execute
   end
