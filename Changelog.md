@@ -1,3 +1,7 @@
+### Unreleased
+* Enhancements
+  * Changes rake tasks to match behavior of corresponding the rails `db` tasks. See [Readme](https://github.com/hsgubert/cassandra_migrations/blob/master/README.md) for updated behavior.
+
 ### 0.2.3 / 2015-05-03
 * Enhancements
   * Single quotes in value strings are automatically escaped

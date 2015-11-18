@@ -400,7 +400,7 @@ Please refer to the wiki: [Using uuid data type](https://github.com/hsgubert/cas
 
 This gem comes with built-in compatibility with Passenger and its smart spawning functionality, so if you're using Passenger all you have to do is deploy and be happy!
 
-To add cassandra database creation and migrations steps to your Capistrano recipe, just add the following line to you deploy.rb:  
+To add cassandra database creation and migrations steps to your Capistrano recipe, just add the following line to you deploy.rb:
 `require 'cassandra_migrations/capistrano'`
 
 # Acknowledgements
