@@ -1,6 +1,9 @@
 ### Unreleased (0.3.x)
 * Enhancements
-  * Changes rake tasks to match behavior of corresponding the rails `db` tasks. See [Readme](https://github.com/hsgubert/cassandra_migrations/blob/master/README.md) for updated behavior.
+  * Deprecates `cassandra:setup` task in favor of `cassandra:migrate:reset`
+  * More helpful error messages around cluster connection and `cassandra:create` task
+* Bug fixes
+  * Spring cluster connection not working
 
 ### 0.2.3 / 2015-05-03
 * Enhancements
