@@ -47,6 +47,7 @@ class Client
     if @sessions[keyspace]
       @session = @sessions[keyspace]
     else
+      Rails.logger.try(:info, "Creating Cassandra session: #{keyspace.inspect}")
       @session = @cluster.connect(keyspace)
       @sessions[keyspace] = @session
     end
@@ -56,9 +57,11 @@ class Client
     @cluster = cluster
     @sessions = {}
     if keyspace
+      Rails.logger.try(:info, "Creating Cassandra session: #{keyspace.inspect}")
       @session = cluster.connect(keyspace)
       @sessions[keyspace] = @session
     else
+      Rails.logger.try(:info, "Creating Cassandra session: [no keyspace]")
       @session = @cluster.connect()
       @sessions[:default] = @session
     end

@@ -75,7 +75,6 @@ module CassandraMigrations
 
     def self.connect_to_server
       connection_params = Config.connection_config_for_env
-      Rails.logger.try(:info, "Creating Cassandra session on #{connection_params}")
 
       begin
         self.client = Client.connect(connection_params)

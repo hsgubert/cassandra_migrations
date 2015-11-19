@@ -11,11 +11,12 @@
 
 module CassandraMigrations
 
+  Cassandra.start!
+
   if defined?(Spring)
     Spring.after_fork do
       Cassandra.restart
     end
-    start_callback_registered = true
   end
 
   if defined?(PhusionPassenger)
@@ -24,11 +25,5 @@ module CassandraMigrations
         Cassandra.restart
       end
     end
-    start_callback_registered = true
   end
-
-  unless start_callback_registered
-    Cassandra.start!
-  end
-
 end
