@@ -34,9 +34,9 @@ end
 
 class Client
   def self.connect(options)
-    @cluster = Cassandra.cluster(options)
+    Rails.logger.try(:info, "Connecting to Cassandra cluster: #{options}")
 
-    if @cluster.nil?
+    unless @cluster = Cassandra.cluster(options)
       raise CassandraMigrations::Errors::ClusterError.new(options)
     end
 
@@ -84,6 +84,7 @@ class Client
   end
 
   def close
+    Rails.logger.try(:info, "Closing Cassandra session: #{@session.inspect}")
     @session.close
   end
 

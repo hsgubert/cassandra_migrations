@@ -11,20 +11,24 @@
 
 module CassandraMigrations
 
+  if defined?(Spring)
+    Spring.after_fork do
+      Cassandra.restart
+    end
+    start_callback_registered = true
+  end
+
   if defined?(PhusionPassenger)
     PhusionPassenger.on_event(:starting_worker_process) do |forked|
       if forked
-        if Cassandra.client
-          Rails.logger.info "Passenger process forked: reconnecting to Cassandra..."
-          Cassandra.restart!
-        else
-          Rails.logger.info "Passenger process forked: connecting to Cassandra..."
-          Cassandra.start!
-        end
+        Cassandra.restart
       end
     end
-  else
+    start_callback_registered = true
+  end
+
+  unless start_callback_registered
     Cassandra.start!
   end
-  
+
 end
