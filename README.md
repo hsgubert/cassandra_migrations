@@ -37,7 +37,7 @@ gem 'cassandra_migrations'
 Similar to how `/config/database.yml` stores your relational databse configuration, `config/cassandra.yml` stores your cassandra database configuration.
 
 ```
-rails generate cassandra:configuration
+rails g cassandra:configuration
 ```
 
 This will create the `config/cassandra.yml` with default settings. Configure the database names for each of your environments.
@@ -69,7 +69,7 @@ Similar to how `db/migrate/` stores your relational databse schema migration fil
 rails g cassandra_migration create_posts
 ```
 
-This will create a versioned migration in `db/cassandra_migrate`, with familiar `up` and `down` methods that will be executed when applying or rolling back a migration, respectively.
+This will create a versioned migration in `db/cassandra_migrate/`, with familiar `up` and `down` methods that will be executed when applying or rolling back a migration, respectively.
 
 ```ruby
 class CreatePosts < CassandraMigrations::Migration
@@ -80,7 +80,7 @@ class CreatePosts < CassandraMigrations::Migration
   end
 end
 ```
-You may call `execute` from these methods to execute CQL statements directly.
+You may call `execute` from these methods to execute CQL statements to your configured keyspace.
 
 ### Cassandra Migrations DSL
 
@@ -154,7 +154,7 @@ rake cassandra:migrate
   create_table(posts)
   -> CREATE TABLE posts (id int, created_month varchar, created_at timestamp, title varchar, category varchar, content text, PRIMARY KEY((id, created_month), created_at))
   create_index(posts)
-  -> CREATE INDEX by_category ON posts (category)
+  -> CREATE INDEX posts_by_category ON posts (category)
 == CreatePosts: migrated (0.3448s) ============================================
 
 Migrated 1 version(s) up.

@@ -79,4 +79,6 @@ namespace :cassandra do
     puts "Current version: #{CassandraMigrations::Migrator.read_current_version}"
   end
 
+  task
+
 end
