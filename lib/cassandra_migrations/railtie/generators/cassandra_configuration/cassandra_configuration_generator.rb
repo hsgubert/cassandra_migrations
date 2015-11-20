@@ -28,13 +28,5 @@ class CassandraConfigurationGenerator < Rails::Generators::Base
     end
 
     puts '[done]'.green
-    puts ''
-    puts 'Your steps from here are:'.green
-    puts '  1. configure '.green + 'config/cassandra.yml'.red
-    puts '  2. run '.green + 'rake cassandra:create'.red + ' and try starting your application'.green
-    puts '  3. create your first migration with '.green + 'rails g cassandra_migration'.red
-    puts '  4. apply your migration with '.green + 'rake cassandra:migrate'.red
-    puts '  5. run '.green + 'rake cassandra:test:prepare'.red + ' and start testing'.green
-    puts '  6. have lots of fun!'.green.blink
   end
 end
