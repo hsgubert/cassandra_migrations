@@ -1,9 +1,13 @@
-### Unreleased
+### 0.2.5 / 2015-11-20
 * Enhancements
   * Deprecates `cassandra:setup` task in favor of `cassandra:migrate:reset`
+  * Replaces `prepare_for_cassandra` script with rails `cassandra_configuration` generator
   * More helpful logging and error messages around cluster connection and `cassandra:create` task
 * Bug fixes
-  * Cassandra cluster and sesions connections were not working with Spring
+  * Cassandra cluster and sessions connections were not working with Spring
+
+### 0.2.4 / 2015-11-18
+* Yanked!
 
 ### 0.2.3 / 2015-05-03
 * Enhancements
