@@ -112,7 +112,7 @@ class CreatePosts < CassandraMigrations::Migration
 end
 ```
 
-Use the following type methods:
+Use the following type methods for fields:
 
 * `text`
 * `integer`
@@ -125,10 +125,10 @@ Use the following type methods:
 * `inet`
 * `timestamp`
 * `datetime`
-* `list`
-* `map`
-* `set`
 * `binary`
+* `list` (with `type` option)
+* `set` (with `type` option)
+* `map` (with `key_type` and `value_type` options)
 
 For more details on the DSL's types, advanced table options, keyspace manipulation, or other schema statment methods, read about the [Migration DSL](wiki/Migration DSL).
 
