@@ -17,9 +17,6 @@ Gem::Specification.new do |s|
   # s.test_files: Files that are used for testing the gem.
   s.test_files = Dir['s/**/*_s.rb']
 
-  # s.executables: Executables that comes with the gem
-  s.executables = ['prepare_for_cassandra']
-
   # s.add_dependency: Production dependencies
   s.add_dependency 'cassandra-driver', '~> 2.1.1'
   s.add_dependency 'rake', '~> 10'
