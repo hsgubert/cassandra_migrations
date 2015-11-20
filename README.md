@@ -112,23 +112,23 @@ class CreatePosts < CassandraMigrations::Migration
 end
 ```
 
-The following types are available:
+Use the following type methods:
 
-* text
-* integer
-* decimal
-* float
-* double
-* boolean
-* uuid
-* timeuuid
-* inet
-* timestamp
-* datetime
-* list
-* map
-* set
-* binary
+* `text`
+* `integer`
+* `decimal`
+* `float`
+* `double`
+* `boolean`
+* `uuid`
+* `timeuuid`
+* `inet`
+* `timestamp`
+* `datetime`
+* `list`
+* `map`
+* `set`
+* `binary`
 
 For more details on the DSL's types, advanced table options, keyspace manipulation, or other schema statment methods, read about the [Migration DSL](wiki/Migration DSL).
 
