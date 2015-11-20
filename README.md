@@ -136,13 +136,13 @@ For more details on the DSL's types, advanced table options, keyspace manipulati
 
 There are a collection of familiar rake tasks to help you manage your cassandra databases.
 
-  * **`rake cassandra:create`** Creates the keyspace in `config/cassandra.yml`.
-  * **`rake cassandra:drop`** Drops the keyspace in `config/cassandra.yml`.
+  * **`rake cassandra:create`** Creates the configured keyspace in `config/cassandra.yml`.
+  * **`rake cassandra:drop`** Drops the configured keyspace in `config/cassandra.yml`.
   * **`rake cassandra:migrate`** Runs migrations that have not run yet.
   * **`rake cassandra:rollback`** Rolls back the latest migration that has been applied.
   * **`rake cassandra:migrate:reset`**  Runs `cassandra:drop`, `cassandra:create` and `cassandra:migrate`.
 
-Each rake task will be run against the database configured for the current environment (via `RAILS_ENV`).
+Each rake task will be run against the database that is configured for the current environment (via `RAILS_ENV`).
 
 ```
 rake cassandra:migrate
@@ -160,7 +160,7 @@ rake cassandra:migrate
 Migrated 1 version(s) up.
 ```
 
-For more details on available rake tasks and options, read [Rake Tasks](wiki/Rake Tasks).
+For more details on available rake tasks and options, read about [Rake Tasks](wiki/Rake Tasks).
 
 ## Query Helpers
 
