@@ -34,13 +34,12 @@ end
 
 class Client
   def self.connect(options)
-    if defined?(Spring)
-      Spring.after_fork do
-        @cluster = Cassandra.cluster(options)
-      end
-    else
-      @cluster = Cassandra.cluster(options)
+    Rails.logger.try(:info, "Connecting to Cassandra cluster: #{options}")
+
+    unless @cluster = Cassandra.cluster(options)
+      raise CassandraMigrations::Errors::ClusterError.new(options)
     end
+
     self.new(@cluster)
   end
 
@@ -48,6 +47,7 @@ class Client
     if @sessions[keyspace]
       @session = @sessions[keyspace]
     else
+      Rails.logger.try(:info, "Creating Cassandra session: #{keyspace.inspect}")
       @session = @cluster.connect(keyspace)
       @sessions[keyspace] = @session
     end
@@ -57,9 +57,11 @@ class Client
     @cluster = cluster
     @sessions = {}
     if keyspace
+      Rails.logger.try(:info, "Creating Cassandra session: #{keyspace.inspect}")
       @session = cluster.connect(keyspace)
       @sessions[keyspace] = @session
     else
+      Rails.logger.try(:info, "Creating Cassandra session: [no keyspace]")
       @session = @cluster.connect()
       @sessions[:default] = @session
     end
@@ -85,6 +87,7 @@ class Client
   end
 
   def close
+    Rails.logger.try(:info, "Closing Cassandra session: #{@session.inspect}")
     @session.close
   end
 

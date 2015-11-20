@@ -1,3 +1,10 @@
+### Unreleased
+* Enhancements
+  * Deprecates `cassandra:setup` task in favor of `cassandra:migrate:reset`
+  * More helpful logging and error messages around cluster connection and `cassandra:create` task
+* Bug fixes
+  * Cassandra cluster and sesions connections were not working with Spring
+
 ### 0.2.3 / 2015-05-03
 * Enhancements
   * Single quotes in value strings are automatically escaped

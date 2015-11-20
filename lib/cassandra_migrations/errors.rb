@@ -34,6 +34,12 @@ module CassandraMigrations
       end
     end
 
+    class ClusterError < CassandraError
+      def initialize(cluster_opts, e = nil)
+        super(%[Could not connect to cluster at #{cluster_opts}. Is Cassandra running? #{"(#{e.message})" if e}])
+      end
+    end
+
     class ConnectionError < CassandraError
       def initialize(msg)
         super(msg)

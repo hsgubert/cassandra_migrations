@@ -28,8 +28,15 @@ module CassandraMigrations
     def self.restart!
       raise Errors::ClientNotStartedError unless client
 
-      client.close if client && client.connected?
-      self.client = nil
+      restart
+    end
+
+    def self.restart
+      if client
+        client.close if client.connected?
+        self.client = nil
+      end
+
       start!
     end
 
@@ -68,7 +75,6 @@ module CassandraMigrations
 
     def self.connect_to_server
       connection_params = Config.connection_config_for_env
-      Rails.logger.try(:info, "Connecting to Cassandra on #{connection_params}")
 
       begin
         self.client = Client.connect(connection_params)

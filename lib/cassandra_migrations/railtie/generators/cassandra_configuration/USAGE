@@ -1,0 +1,11 @@
+Description:
+    Generates a default cassandra database configuration
+
+Example:
+    rails generate cassandra_configuration
+
+    This will create:
+      config/cassandra.yml
+
+    Inside this file a default configuration will be ready for completion:
+
