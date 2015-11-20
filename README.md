@@ -34,10 +34,10 @@ gem 'cassandra_migrations'
 
 ## Configuration
 
-Similar to how `/config/database.yml` stores your relational databse configuration, `config/cassandra.yml` stores your cassandra database configuration.
+Similar to how `config/database.yml` stores your relational databse configuration, `config/cassandra.yml` stores your cassandra database configuration.
 
 ```
-rails g cassandra:configuration
+rails g cassandra_configuration
 ```
 
 This will create the `config/cassandra.yml` with default settings. Configure the database names for each of your environments.
