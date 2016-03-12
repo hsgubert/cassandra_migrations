@@ -247,7 +247,8 @@ module CassandraMigrations
           when :compact_storage
             cql_name
           else
-            "#{cql_name} = #{value}"
+            value_str = value.map {|k, v| "'#{k}':'#{v}'"}.join(',')
+            "#{cql_name} = {#{value_str}}"
         end
       end
 
