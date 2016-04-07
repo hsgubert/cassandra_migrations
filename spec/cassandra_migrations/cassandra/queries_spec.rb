@@ -3,18 +3,18 @@ require 'spec_helper'
 
 describe CassandraMigrations::Cassandra::Queries do
 
+  def set_column_info(type)
+    @column_info = [{'validator' => "org.apache.cassandra.db.marshal.#{type}(org.apache.cassandra.db.marshal.UTF8Type"}]
+  end
+
+  before :each do
+    @client = double("client", {keyspace: 'test_keyspace'})
+    allow(TestQueryExecutor).to receive(:client).and_return(@client)
+    @cql_command_for_validator = "SELECT VALIDATOR FROM system.schema_columns WHERE keyspace_name = 'test_keyspace' AND columnfamily_name = 'people' AND column_name = 'friends'"
+  end
+
   class TestQueryExecutor
     extend CassandraMigrations::Cassandra::Queries
-
-    def self.column_type=(column_type)
-      @column_type = column_type
-    end
-
-    private
-
-      def self.get_column_type(table, column)
-        @column_type
-      end
   end
 
   describe '.write!' do
@@ -68,7 +68,8 @@ describe CassandraMigrations::Cassandra::Queries do
     context 'when dealing with collections' do
 
       it 'should handle setting a set collection column value' do
-        TestQueryExecutor.column_type = :set
+        set_column_info('SetType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "INSERT INTO people (friends) VALUES ({'John', 'Ringo', 'Paul', 'George'})"
@@ -78,7 +79,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a list collection column value' do
-        TestQueryExecutor.column_type = :list
+        set_column_info('ListType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "INSERT INTO people (friends) VALUES (['John', 'Ringo', 'Paul', 'George'])"
@@ -88,8 +90,6 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a map collection column value' do
-        TestQueryExecutor.column_type = :map
-
         allow(TestQueryExecutor).to receive(:execute).with(
           "INSERT INTO people (friends) VALUES ({ 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' })"
         )
@@ -133,7 +133,8 @@ describe CassandraMigrations::Cassandra::Queries do
     context 'when dealing with collections' do
 
       it 'should handle setting a set collection column' do
-        TestQueryExecutor.column_type = :set
+        set_column_info('SetType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
@@ -143,7 +144,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle adding elements to a set collection column' do
-        TestQueryExecutor.column_type = :set
+        set_column_info('SetType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = friends + {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
@@ -155,7 +157,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle removing elements from a set collection column' do
-        TestQueryExecutor.column_type = :set
+        set_column_info('SetType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = friends - {'John', 'Ringo', 'Paul', 'George'} WHERE name = 'Stuart'"
@@ -167,7 +170,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a list collection column' do
-        TestQueryExecutor.column_type = :list
+        set_column_info('ListType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
@@ -177,7 +181,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle adding elements to a list collection column' do
-        TestQueryExecutor.column_type = :list
+        set_column_info('ListType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = friends + ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
@@ -189,7 +194,8 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle removing elements from a list collection column' do
-        TestQueryExecutor.column_type = :list
+        set_column_info('ListType')
+        expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = friends - ['John', 'Ringo', 'Paul', 'George'] WHERE name = 'Stuart'"
@@ -201,8 +207,6 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a map collection column' do
-        TestQueryExecutor.column_type = :map
-
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = { 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' } WHERE name = 'Stuart'"
         )
@@ -211,8 +215,6 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle adding elements to a map collection column' do
-        TestQueryExecutor.column_type = :map
-
         allow(TestQueryExecutor).to receive(:execute).with(
           "UPDATE people SET friends = friends + { 'talent': 'John', 'drums': 'Ringo', 'voice': 'Paul', 'rhythm': 'George' } WHERE name = 'Stuart'"
         )
@@ -223,8 +225,6 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle removing elements from a map collection column' do
-        TestQueryExecutor.column_type = :map
-
         allow(TestQueryExecutor).to receive(:execute).with(
           "DELETE friends['drums'] FROM people WHERE name = 'Stuart'"
         )
