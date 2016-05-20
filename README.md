@@ -213,16 +213,18 @@ To add cassandra database creation and migrations steps to your Capistrano recip
 `require 'cassandra_migrations/capistrano'`
 
 
-### Development
+## Development
 
 To run the test suite:
 
 `bundle install`
+
 `rake`
 
 Additionally, this project aims for compatiblity with Rails 3.2 and above. For that, we use the `appraisal` [gem](https://github.com/thoughtbot/appraisal). If you make changes, run our test suite against all supported version of Rails like so:
 
 `appraisal install`
+
 `appraisal rake`
 
 ## Acknowledgements
