@@ -37,10 +37,10 @@ module CassandraMigrations
 
       def validate_config(config)
         if config.keyspace.nil?
-          raise Errors::MissingConfigurationError.new("Configuration of 'keyspace' is required in config.yml, but none is defined.")
+          raise Errors::MissingConfigurationError.new("Configuration of 'keyspace' is required in config/cassandra.yml, but none is defined.")
         end
         unless config_includes_replication?(config)
-          raise Errors::MissingConfigurationError.new("Configuration for 'replication' is required in config.yml, but none is defined.")
+          raise Errors::MissingConfigurationError.new("Configuration for 'replication' is required in config/cassandra.yml, but none is defined.")
         end
         true
       end
