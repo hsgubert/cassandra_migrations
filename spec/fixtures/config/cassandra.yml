@@ -16,6 +16,24 @@ test:
     class: 'SimpleStrategy'
     replication_factor: 1
 
+test_with_missing_replication_factor:
+  hosts:
+    - 127.0.0.1
+  port: 9042
+  keyspace: my_keyspace_test
+  replication:
+    class: 'SimpleStrategy'
+
+test_with_network_topology_strategy:
+  hosts:
+    - 127.0.0.1
+  port: 9042
+  keyspace: my_keyspace_test_network_topology
+  replication:
+    class: 'NetworkTopologyStrategy'
+    testdc: 1
+    dc2: 2
+
 production:
   hosts:
     - 'cass1.my_app.biz'
