@@ -212,6 +212,21 @@ end
 To add cassandra database creation and migrations steps to your Capistrano recipe, add the following line to you deploy.rb:
 `require 'cassandra_migrations/capistrano'`
 
+
+## Development
+
+To run the test suite:
+
+`bundle install`
+
+`rake`
+
+Additionally, this project aims for compatiblity with Rails 3.2 and above. For that, we use the `appraisal` [gem](https://github.com/thoughtbot/appraisal). If you make changes, run our test suite against all supported version of Rails like so:
+
+`appraisal install`
+
+`appraisal rake`
+
 ## Acknowledgements
 
 This gem is built upon the official [Ruby Driver for Apache Cassandra](https://github.com/datastax/ruby-driver) by DataStax.
