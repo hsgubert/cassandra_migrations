@@ -1,5 +1,6 @@
 # encoding: utf-8
 require 'cassandra'
+require 'active_support/core_ext/string/strip'
 
 module CassandraMigrations
   module Cassandra
