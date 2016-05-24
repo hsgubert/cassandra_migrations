@@ -1,7 +1,12 @@
+# coding: utf-8
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'cassandra_migrations/version'
+
 Gem::Specification.new do |s|
   s.name        = 'cassandra_migrations'
-  s.version     = '0.2.5'
-  s.date        = '2015-11-20'
+  s.version     = CassandraMigrations::VERSION
+  s.date        = '2016-05-24'
   s.license     = 'MIT'
   s.summary     = 'Cassandra schema management for a multi-environment developer.'
   s.description = 'A gem to manage Cassandra database schema for Rails. This gem offers migrations and environment specific databases out-of-the-box for Rails users.'
@@ -18,13 +23,13 @@ Gem::Specification.new do |s|
   s.test_files = Dir['s/**/*_s.rb']
 
   # s.add_dependency: Production dependencies
-  s.add_dependency 'cassandra-driver', '~> 2.1.1'
-  s.add_dependency 'rake', '~> 10'
-  s.add_dependency 'rails', '>= 3.2'
-  s.add_dependency 'colorize', '~> 0.7.3'
+  s.add_runtime_dependency 'cassandra-driver', '~> 2.1', '>= 2.1.1'
+  s.add_runtime_dependency 'rake', '~> 10'
+  s.add_runtime_dependency 'rails', '~> 3.2'
+  s.add_runtime_dependency 'colorize', '~> 0.7.3'
 
   # s.add_development_dependency: Development dependencies
-  s.add_development_dependency 'rspec', '~> 3.1.0'
+  s.add_development_dependency 'rspec', '~> 3.1', '>= 3.1.0'
   s.add_development_dependency 'byebug', '~> 8.2'
   s.add_development_dependency 'bundler', '~> 1.6'
   s.add_development_dependency 'simplecov', '~> 0.9'

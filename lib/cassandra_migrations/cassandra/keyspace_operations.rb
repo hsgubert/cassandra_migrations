@@ -10,7 +10,7 @@ module CassandraMigrations
         execute(create_keyspace_statement(config))
         begin
           use(config.keyspace)
-        rescue StandardErorr => exception
+        rescue StandardError => exception
           drop_keyspace!(env)
           raise exception
         end
