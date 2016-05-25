@@ -81,11 +81,16 @@ private
     end
 
     def self.get_class_from_migration_name(filename)
-      filename.match(/[0-9]{14}_(.+)\.rb$/).captures.first.camelize.constantize
+      migration_name = filename.match(/[0-9]+_(.+)\.rb$/).captures.first.camelize
+      migration_name.constantize
+    rescue NameError => e
+      raise Errors::MigrationNamingError, "Migration file names must match the class name in the migration—could not find class #{migration_name}."
     end
 
-    def self.get_version_from_migration_name(migration_name)
-      migration_name.match(/([0-9]{14})_.+\.rb$/).captures.first.to_i
+    def self.get_version_from_migration_name(filename)
+      filename.match(/\/([0-9]+)_.+\.rb$/).captures.first.to_i
+    rescue
+      raise Errors::MigrationNamingError, "Migration file names must start with a numeric version prefix."
     end
   end
 end
