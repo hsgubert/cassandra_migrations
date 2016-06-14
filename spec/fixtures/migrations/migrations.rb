@@ -195,6 +195,15 @@ class WithPropertyMigration < CassandraMigrations::Migration
   end
 end
 
+class WithMultipleNestedPropertiesMigration < CassandraMigrations::Migration
+  def up
+    create_table :collection_lists, options: {compression: {sstable_compression: 'DeflateCompressor', chunk_length_kb: 64}, compaction: {class: 'LeveledCompactionStrategy'}} do |t|
+      t.uuid :id, :primary_key => true
+      t.decimal :a_decimal
+    end
+  end
+end
+
 class WithAlternateKeyspaceMigration < CassandraMigrations::Migration
   def up
     using_keyspace('alternative') do
