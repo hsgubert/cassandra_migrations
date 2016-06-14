@@ -282,6 +282,18 @@ describe CassandraMigrations do
       end
     end
 
+    context 'with multiple nested properties' do
+      before do
+        @migration = WithMultipleNestedPropertiesMigration.new
+      end
+
+      it 'should produce a valid CQL create statement' do
+        @migration.up
+        expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH compression = {'sstable_compression':'DeflateCompressor','chunk_length_kb':'64'} AND compaction = {'class':'LeveledCompactionStrategy'}"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+    end
+
     context 'using a different keyspace' do
       before do
         @migration = WithAlternateKeyspaceMigration.new
