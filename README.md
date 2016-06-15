@@ -227,6 +227,12 @@ Additionally, this project aims for compatiblity with Rails 3.2 and above. For t
 
 `appraisal rake`
 
+## Contributors
+* Henrique Gubert - @hsgubert
+* Brian Sam-Bodden - @bsbodden
+* Sid Tantia - @sstgithub
+* [and more...](https://github.com/hsgubert/cassandra_migrations/graphs/contributors)
+
 ## Acknowledgements
 
 This gem is built upon the official [Ruby Driver for Apache Cassandra](https://github.com/datastax/ruby-driver) by DataStax.
