@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir['s/**/*_s.rb']
 
   # s.add_dependency: Production dependencies
-  s.add_runtime_dependency 'cassandra-driver', '~> 3.0', '>= 2.1.1'
+  s.add_runtime_dependency 'cassandra-driver', '~> 3.0'
   s.add_runtime_dependency 'rake', '~> 10'
   s.add_runtime_dependency 'rails', '>= 3.2'
   s.add_runtime_dependency 'colorize', '~> 0.7.3'

@@ -4,13 +4,13 @@ require 'spec_helper'
 describe CassandraMigrations::Cassandra::Queries do
 
   def set_column_info(type)
-    @column_info = [{'validator' => "org.apache.cassandra.db.marshal.#{type}(org.apache.cassandra.db.marshal.UTF8Type"}]
+    @column_info = [{'type' => "#{type}"}]
   end
 
   before :each do
     @client = double("client", {keyspace: 'test_keyspace'})
     allow(TestQueryExecutor).to receive(:client).and_return(@client)
-    @cql_command_for_validator = "SELECT VALIDATOR FROM system.schema_columns WHERE keyspace_name = 'test_keyspace' AND columnfamily_name = 'people' AND column_name = 'friends'"
+    @cql_command_for_validator = "SELECT type FROM system_schema.columns WHERE keyspace_name = 'test_keyspace' AND table_name = 'people' AND column_name = 'friends'"
   end
 
   class TestQueryExecutor
@@ -68,7 +68,7 @@ describe CassandraMigrations::Cassandra::Queries do
     context 'when dealing with collections' do
 
       it 'should handle setting a set collection column value' do
-        set_column_info('SetType')
+        set_column_info('set<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -79,7 +79,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a list collection column value' do
-        set_column_info('ListType')
+        set_column_info('list<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -133,7 +133,7 @@ describe CassandraMigrations::Cassandra::Queries do
     context 'when dealing with collections' do
 
       it 'should handle setting a set collection column' do
-        set_column_info('SetType')
+        set_column_info('set<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -144,7 +144,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle adding elements to a set collection column' do
-        set_column_info('SetType')
+        set_column_info('set<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -157,7 +157,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle removing elements from a set collection column' do
-        set_column_info('SetType')
+        set_column_info('set<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -170,7 +170,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle setting a list collection column' do
-        set_column_info('ListType')
+        set_column_info('list<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -181,7 +181,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle adding elements to a list collection column' do
-        set_column_info('ListType')
+        set_column_info('list<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
@@ -194,7 +194,7 @@ describe CassandraMigrations::Cassandra::Queries do
       end
 
       it 'should handle removing elements from a list collection column' do
-        set_column_info('ListType')
+        set_column_info('list<text>')
         expect(@client).to receive(:execute).with(@cql_command_for_validator).and_return(@column_info)
 
         allow(TestQueryExecutor).to receive(:execute).with(
