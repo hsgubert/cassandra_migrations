@@ -271,13 +271,17 @@ describe CassandraMigrations do
     end
 
     context 'with other property' do
-      before do
-        @migration = WithPropertyMigration.new
-      end
-
       it 'should produce a valid CQL create statement' do
+        @migration = WithPropertyMigration.new
         @migration.up
         expected_cql = "CREATE TABLE collection_lists (id uuid, a_decimal decimal, PRIMARY KEY(id)) WITH gc_grace_seconds = 43200"
+        expect(@migration.cql).to eq(expected_cql)
+      end
+
+      it 'should produce a valid CQL alter table statement' do
+        @migration = ChangePropertyMigration.new
+        @migration.up
+        expected_cql = "ALTER TABLE collection_lists WITH gc_grace_seconds = 20000"
         expect(@migration.cql).to eq(expected_cql)
       end
     end
