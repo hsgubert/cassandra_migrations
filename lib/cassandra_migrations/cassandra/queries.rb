@@ -106,28 +106,9 @@ module CassandraMigrations
 
     private
 
-      SYMBOL_FOR_TYPE = {
-        'SetType' => :set,
-        'ListType' => :list,
-        'MapType' => :map,
-        'BooleanType' => :boolean,
-        'FloatType' => :float,
-        'Int32Type' => :int,
-        'DateType' => :timestamp,
-        'UTF8Type' => :string,
-        'BytesType' => :blob,
-        'UUIDType' => :uuid,
-        'DoubleType' => :double,
-        'InetAddressType' => :inet,
-        'AsciiType' => :ascii,
-        'LongType' => :bigint ,
-        'DecimalType' => :decimal,
-        'TimeUUIDType' => :timeuuid
-      }
-
       def get_column_type(table, column)
-        column_info = client.execute("SELECT VALIDATOR FROM system.schema_columns WHERE keyspace_name = '#{client.keyspace}' AND columnfamily_name = '#{table}' AND column_name = '#{column}'")
-        SYMBOL_FOR_TYPE[(column_info.first['validator'].split(/[\.(]/) & SYMBOL_FOR_TYPE.keys).first]
+        column_type = client.execute("SELECT type FROM system_schema.columns WHERE keyspace_name = '#{client.keyspace}' AND table_name = '#{table}' AND column_name = '#{column}'").first['type']
+        column_type.split("<").first.to_sym
       end
 
       def to_cql_value(column, value, table, options={})
