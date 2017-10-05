@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require "benchmark"
 require 'cassandra_migrations/migration/table_operations'
 require 'cassandra_migrations/migration/column_operations'
 
