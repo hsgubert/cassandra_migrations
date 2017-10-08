@@ -23,16 +23,16 @@ Gem::Specification.new do |s|
   s.test_files = Dir['s/**/*_s.rb']
 
   # s.add_dependency: Production dependencies
-  s.add_runtime_dependency 'cassandra-driver', '~> 3.0'
-  s.add_runtime_dependency 'rake', '~> 10'
+  s.add_runtime_dependency 'cassandra-driver', '~> 3.2'
+  s.add_runtime_dependency 'rake', '~> 12'
   s.add_runtime_dependency 'rails', '>= 3.2'
-  s.add_runtime_dependency 'colorize', '~> 0.7.3'
+  s.add_runtime_dependency 'colorize', '~> 0.8'
 
   # s.add_development_dependency: Development dependencies
-  s.add_development_dependency 'rspec', '~> 3.1', '>= 3.1.0'
-  s.add_development_dependency 'byebug', '~> 8.2'
+  s.add_development_dependency 'rspec', '~> 3.6'
+  s.add_development_dependency 'byebug', '~> 9.1'
   s.add_development_dependency 'bundler', '~> 1.6'
-  s.add_development_dependency 'simplecov', '~> 0.9'
-  s.add_development_dependency 'coveralls', '~> 0.7'
-  s.add_development_dependency 'appraisal', '~> 1.0'
+  s.add_development_dependency 'simplecov', '~> 0.14'
+  s.add_development_dependency 'coveralls', '~> 0.8'
+  s.add_development_dependency 'appraisal', '~> 2.2'
 end
