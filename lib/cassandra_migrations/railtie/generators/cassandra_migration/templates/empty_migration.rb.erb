@@ -1,9 +1,9 @@
 class <%= @migration_class_name %> < CassandraMigrations::Migration
   def up
-  
+    raise CassandraMigrations::Errors::MigrationDefinitionError, "Empty up migration!"
   end
   
   def down
-  
+    raise CassandraMigrations::Errors::MigrationDefinitionError, "Empty down migration!"
   end
 end
