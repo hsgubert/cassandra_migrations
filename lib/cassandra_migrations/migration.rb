@@ -65,6 +65,16 @@ module CassandraMigrations
       end
     end  
     
+    def execute_operation(cql)
+      announce_operation cql
+      execute cql
+    end
+
+    def execute_suboperation(cql)
+      announce_suboperation cql
+      execute cql
+    end
+    
   private
   
     # Generates output labeled with name of migration and a line that goes up 
@@ -83,16 +93,6 @@ module CassandraMigrations
       puts "  -> " + message
     end
 
-    def execute_operation(cql)
-      announce_operation cql
-      execute cql
-    end
-
-    def execute_suboperation(cql)
-      announce_suboperation cql
-      execute cql
-    end
-    
     # Gets the name of the migration
     def name
       self.class.name
