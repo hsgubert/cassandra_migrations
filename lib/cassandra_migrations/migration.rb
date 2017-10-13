@@ -65,17 +65,23 @@ module CassandraMigrations
       end
     end  
     
-    def execute_operation(cql)
-      announce_operation cql
+  private
+    
+    ##
+    # Announce and execute some CQL operation.
+    def execute_operation(a, b=nil)
+      cql = (b == nil) ? a : b
+      announce_operation a
       execute cql
     end
 
-    def execute_suboperation(cql)
+    ##
+    # Announce and execute some CQL sub-operation.
+    def execute_suboperation(a, b=nil)
+      cql = (b == nil) ? a : b
       announce_suboperation cql
       execute cql
     end
-    
-  private
   
     # Generates output labeled with name of migration and a line that goes up 
     # to 75 characters long in the terminal
