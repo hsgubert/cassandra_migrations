@@ -82,6 +82,16 @@ module CassandraMigrations
     def announce_suboperation(message)
       puts "  -> " + message
     end
+
+    def execute_operation(cql)
+      announce_operation cql
+      execute cql
+    end
+
+    def execute_suboperation(cql)
+      announce_suboperation cql
+      execute cql
+    end
     
     # Gets the name of the migration
     def name
