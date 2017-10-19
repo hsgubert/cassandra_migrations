@@ -66,20 +66,32 @@ module CassandraMigrations
     end  
     
   private
+
+    ##
+    # Execute contents of a file.
+    def execute_file(path)
+      File.read(path).strip.split(/;\s*$/).each do |statement|
+        execute_operation(statement + ";")
+      end
+    end
     
     ##
     # Announce and execute some CQL operation.
-    def execute_operation(a, b=nil)
-      cql = (b == nil) ? a : b
-      announce_operation a
+    def execute_operation(*args)
+      raise ArgumentError, "Missing argument(s)!" if args.count < 1
+      message = args[0]
+      cql = args[1] || args[0]
+      announce_operation message
       execute cql
     end
 
     ##
     # Announce and execute some CQL sub-operation.
-    def execute_suboperation(a, b=nil)
-      cql = (b == nil) ? a : b
-      announce_suboperation cql
+    def execute_suboperation(*args)
+      raise ArgumentError, "Missing argument(s)!" if args.count < 1
+      message = args[0]
+      cql = args[1] || args[0]
+      announce_suboperation message
       execute cql
     end
   
