@@ -67,34 +67,6 @@ module CassandraMigrations
     
   private
 
-    ##
-    # Execute contents of a file.
-    def execute_file(path)
-      File.read(path).strip.split(/;\s*$/).each do |statement|
-        execute_operation(statement + ";")
-      end
-    end
-    
-    ##
-    # Announce and execute some CQL operation.
-    def execute_operation(*args)
-      raise ArgumentError, "Missing argument(s)!" if args.count < 1
-      message = args[0]
-      cql = args[1] || args[0]
-      announce_operation message
-      execute cql
-    end
-
-    ##
-    # Announce and execute some CQL sub-operation.
-    def execute_suboperation(*args)
-      raise ArgumentError, "Missing argument(s)!" if args.count < 1
-      message = args[0]
-      cql = args[1] || args[0]
-      announce_suboperation message
-      execute cql
-    end
-  
     # Generates output labeled with name of migration and a line that goes up 
     # to 75 characters long in the terminal
     def announce_migration(message)
@@ -114,6 +86,27 @@ module CassandraMigrations
     # Gets the name of the migration
     def name
       self.class.name
+    end
+
+    ##
+    # Execute contents of a file.
+    def execute_file(path)
+      execute_text File.read(path)
+    end
+    
+    ##
+    # Announce and execute some CQL operation.
+    def execute_statement(statement)
+      announce_operation statement
+      execute statement
+    end
+
+    ##
+    # Execute CQL text.
+    def execute_text(text)
+      text.strip.split(/;\s*$/).each do |statement|
+        execute_operation(statement + ";")
+      end
     end
   end
 end
