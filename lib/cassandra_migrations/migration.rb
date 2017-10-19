@@ -105,7 +105,7 @@ module CassandraMigrations
     # Execute CQL text.
     def execute_text(text)
       text.strip.split(/;\s*$/).each do |statement|
-        execute_operation(statement + ";")
+        execute_statement(statement + ";")
       end
     end
   end
