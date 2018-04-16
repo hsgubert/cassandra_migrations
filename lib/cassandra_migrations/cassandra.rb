@@ -48,16 +48,45 @@ module CassandraMigrations
     end
 
     def self.using_keyspace(keyspace, &block)
+      puts "  using_keyspace(#{keyspace})"
       use(keyspace)
-      block.call
-      use(Config.keyspace)
+      begin
+        # invoke the block in the other namespace
+        block.call
+      ensure
+        # always switch back to the main keyspace
+        use(Config.keyspace)
+      end
+    end
+
+    ##
+    # Use the keyspace specified in a particular environment entry of the config/cassandra.yml file.
+    # In order for this to work, such environemnts in the YAML file must have the format
+    # of {prefix}-{environment}, where {prefix} is some name, and {environment} is one of the main Rails
+    # environment names.  For example, by defining foo1-development, foo1-test and foo1-production in
+    # config/cassandra.yml, a migration can invoke use_keyspace("foo1") to target the keyspace
+    # specified therein, in accordance with the Rails environment names.  This approach is better than
+    # the using_keyspace() method because it allows a migration targeting another keyspace to be usable
+    # in all environments the application needs to run in.
+    def self.use_keyspace(prefix, &block)
+      env_name = "#{prefix.to_s}-#{Rails.env}"
+      keyspace = CassandraMigrations::Config.configurations[env_name].keyspace
+      puts "  Use keyspace #{keyspace} from #{env_name} in config/cassandra.yml"
+      use(keyspace)
+      begin
+        # invoke the block in the other namespace
+        block.call
+      ensure
+        # always switch back to the main keyspace
+        use(Config.keyspace)
+      end
     end
 
     def self.use(keyspace)
       connect_to_server unless client
 
       begin
-        client.use(keyspace)
+        client.use(keyspace.to_s)
       rescue Exception => e # keyspace does not exist
         puts "#{e} : #{e.message}"
         raise Errors::UnexistingKeyspaceError, keyspace
