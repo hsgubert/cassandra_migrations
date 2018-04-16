@@ -51,6 +51,7 @@ describe CassandraMigrations::Cassandra do
       expect(CassandraMigrations::Cassandra.use('anything')).to be_nil
     end
 
+    # As written this spec requires real Cassandra to be available on 127.0.0.1:9042 in order to pass
     it "should raise exception if configured keyspace does not exist" do
       expect {
         CassandraMigrations::Cassandra.use('anything')
@@ -59,6 +60,17 @@ describe CassandraMigrations::Cassandra do
   end
 
   describe '.using_keyspace' do
+    it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
+      cql_client_mock = double('cql_client')
+      original_keyspace = CassandraMigrations::Config.keyspace
+      allow(Client).to receive(:connect).with(:hosts => ['127.0.0.1'], :port => 9042).and_return(cql_client_mock)
+      allow(cql_client_mock).to receive(:use).with('anything').and_return(nil)
+      allow(cql_client_mock).to receive(:use).with(original_keyspace).and_return(nil)
+      expect { |block| CassandraMigrations::Cassandra.using_keyspace('anything', &block) }.to yield_control
+    end
+  end
+
+  describe '.use_keyspace' do
     it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
       cql_client_mock = double('cql_client')
       original_keyspace = CassandraMigrations::Config.keyspace
