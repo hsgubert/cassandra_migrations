@@ -59,18 +59,18 @@ describe CassandraMigrations::Cassandra do
     end
   end
 
-  describe '.using_keyspace' do
-    it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
+  describe '.use_keyspace' do
+    it 'should set use the specified keyspace by environment yield to the block and then reset the keyspace' do
       cql_client_mock = double('cql_client')
       original_keyspace = CassandraMigrations::Config.keyspace
       allow(Client).to receive(:connect).with(:hosts => ['127.0.0.1'], :port => 9042).and_return(cql_client_mock)
       allow(cql_client_mock).to receive(:use).with('anything').and_return(nil)
       allow(cql_client_mock).to receive(:use).with(original_keyspace).and_return(nil)
-      expect { |block| CassandraMigrations::Cassandra.using_keyspace('anything', &block) }.to yield_control
+      expect { |block| CassandraMigrations::Cassandra.use_keyspace('anything', &block) }.to yield_control
     end
   end
 
-  describe '.use_keyspace' do
+  describe '.using_keyspace' do
     it 'should set use the specified keyspace yield to the block and then reset the keyspace' do
       cql_client_mock = double('cql_client')
       original_keyspace = CassandraMigrations::Config.keyspace
