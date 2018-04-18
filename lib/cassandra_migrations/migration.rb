@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require "benchmark"
 require 'cassandra_migrations/migration/table_operations'
 require 'cassandra_migrations/migration/column_operations'
 
@@ -14,6 +15,7 @@ module CassandraMigrations
     # Makes +execute+ method directly available to migrations
     delegate :execute, :to => Cassandra
     delegate :using_keyspace, :to => Cassandra
+    delegate :use_keyspace, :to => Cassandra
     
     # Makes +up+ work if the method in the migration is defined with self.up
     def up
@@ -65,7 +67,7 @@ module CassandraMigrations
     end  
     
   private
-  
+
     # Generates output labeled with name of migration and a line that goes up 
     # to 75 characters long in the terminal
     def announce_migration(message)
@@ -81,10 +83,31 @@ module CassandraMigrations
     def announce_suboperation(message)
       puts "  -> " + message
     end
-    
+
     # Gets the name of the migration
     def name
       self.class.name
+    end
+
+    ##
+    # Execute contents of a file.
+    def execute_file(path)
+      execute_text File.read(path)
+    end
+    
+    ##
+    # Announce and execute some CQL operation.
+    def execute_statement(statement)
+      announce_operation statement
+      execute statement
+    end
+
+    ##
+    # Execute CQL text.
+    def execute_text(text)
+      text.strip.split(/;\s*$/).each do |statement|
+        execute_statement(statement + ";")
+      end
     end
   end
 end

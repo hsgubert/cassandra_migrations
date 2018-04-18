@@ -231,6 +231,7 @@ Additionally, this project aims for compatiblity with Rails 3.2 and above. For t
 * Henrique Gubert - @hsgubert
 * Brian Sam-Bodden - @bsbodden
 * Sid Tantia - @sstgithub
+* Nathan Brazil - @bitaxis
 * [and more...](https://github.com/hsgubert/cassandra_migrations/graphs/contributors)
 
 ## Acknowledgements
