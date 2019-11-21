@@ -16,7 +16,7 @@ module CassandraMigrations
         new_migrations.each { |migration| up(migration) }
       end
 
-      system("cqlsh -e 'DESC KEYSPACE cards_#{Rails.env}' > '~/workspace/jawaker/web/db/cassandra_schema.cql'")
+      system("cqlsh -e 'DESC KEYSPACE cards_#{Rails.env}' > './db/cassandra_schema.cql'")
       new_migrations.size
     end
 
