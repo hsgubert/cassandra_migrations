@@ -15,6 +15,8 @@ module CassandraMigrations
     mattr_accessor :client
 
     def self.start!
+      return unless inside_rake_task?
+
       begin
         # setup keyspace use
         use(Config.keyspace)
@@ -81,6 +83,12 @@ module CassandraMigrations
       rescue Ione::Io::ConnectionError => e
         raise Errors::ConnectionError, e.message
       end
+    end
+
+    def self.inside_rake_task?
+      return false unless defined?(Rake.application)
+
+      Rake.application.top_level_tasks.any? { |t| t =~ /cassandra/ }
     end
   end
 end
